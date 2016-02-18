@@ -15,9 +15,9 @@ namespace System
 {
     enum class Type
     {
-        Asset,
-        Memory,
-        Renderer
+        Asset = 0,
+        Memory = 1,
+        Renderer = 3
     };
 
     internal RenderManager gRenderManager;
