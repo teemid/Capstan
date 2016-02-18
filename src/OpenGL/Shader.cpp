@@ -10,56 +10,75 @@
 
 namespace Capstan
 {
-    Shader::Shader (char * filename, ShaderStage stage)
+    Shader::Shader (void)
+    {
+        this->program = 0;
+    }
+
+    Shader::Shader (GLchar * vertexShader, GLchar * fragmentShader)
     {
         AssetManager * gAssetManager = (AssetManager *)System::Get(System::Type::Asset);
 
-        GLenum shaderStage;
+        ShaderAsset vertexShaderAsset = gAssetManager->LoadShader(vertexShader);
+        ShaderAsset fragmentShaderAsset = gAssetManager->LoadShader(fragmentShader);
 
-        switch (stage)
-        {
-            case ShaderStage::Vertex:
-            {
-                shaderStage = GL_VERTEX_SHADER;
-            } break;
-            case ShaderStage::Fragment:
-            {
-                shaderStage = GL_FRAGMENT_SHADER;
-            } break;
-            default:
-            {
-                Debug::OutputString("Illegal OpenGL Shader type.");
-            } break;
-        }
+        this->program = glCreateProgram();
 
-        this->id = glCreateShader(shaderStage);
-        ShaderAsset asset = gAssetManager->LoadShader(filename);
-        glShaderSource(this->id, 1, &asset.source, NULL);
+        GLuint vertex = Compile(GL_VERTEX_SHADER, &vertexShaderAsset.source);
+        GLuint fragment = Compile(GL_FRAGMENT_SHADER, &fragmentShaderAsset.source);
 
-        glCompileShader(this->id);
+        glAttachShader(this->program, vertex);
+        glAttachShader(this->program, fragment);
+
+        Link();
+
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
+    }
+
+    GLuint Shader::Compile (GLenum shaderStage, GLchar ** shaderSource)
+    {
+        GLuint shader = glCreateShader(shaderStage);
+        glShaderSource(shader, 1, shaderSource, NULL);
+        glCompileShader(shader);
 
         GLint success;
-        glGetShaderiv(this->id, GL_COMPILE_STATUS, &success);
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
         if (!success)
         {
-            GLchar infoLog[512];
-            glGetShaderInfoLog(this->id, 512, NULL, infoLog);
-            Debug::OutputString("VertexShader failed to compile: %s", infoLog);
-
+            GLchar info[512];
+            glGetShaderInfoLog(shader, 512, NULL, info);
+            Debug::OutputString("Shader failed to compile: %s", info);
             assert(success);
         }
 
-        Core::Free(asset.source);
+        return shader;
+    }
+
+    void Shader::Link (void)
+    {
+        glLinkProgram (this->program);
+
+        GLint success;
+        glGetProgramiv(this->program, GL_LINK_STATUS, &success);
+
+        if (!success)
+        {
+            GLchar info[512];
+            glGetProgramInfoLog(this->program, 512, NULL, info);
+            Debug::OutputString("Shader program failed to link: %s", info);
+            assert(success);
+        }
+    }
+
+    void Shader::Use (void)
+    {
+        glUseProgram(this->program);
     }
 
     Shader::~Shader (void)
     {
-        glDeleteShader(this->id);
-    }
-
-    GLuint Shader::GetId (void)
-    {
-        return this->id;
+        glDeleteProgram(this->program);
     }
 }

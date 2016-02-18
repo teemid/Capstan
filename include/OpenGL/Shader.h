@@ -1,7 +1,13 @@
 #ifndef CAPSTAN_OPENGL_SHADER_H
 #define CAPSTAN_OPENGL_SHADER_H
 
-#include "OpenGL.h"
+namespace Capstan
+{
+    class Shader;
+}
+
+
+#include "OpenGL/gl.h"
 #include "types.h"
 
 
@@ -17,12 +23,16 @@ namespace Capstan
     class Shader
     {
     public:
-        Shader (char * filename, ShaderStage stage);
+        Shader (void);
+        Shader (GLchar * vertexShader, GLchar * fragmentShader);
         ~Shader (void);
 
-        GLuint GetId (void);
+        void Use (void);
     private:
-        GLuint id;
+        GLuint Compile (GLenum shaderStage, GLchar ** shaderSource);
+        void Link (void);
+
+        GLuint program;
     };
 }
 

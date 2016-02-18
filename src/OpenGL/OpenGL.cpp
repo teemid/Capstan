@@ -1,6 +1,5 @@
 #include "OpenGL/OpenGL.h"
-#include "OpenGL/Shader.h"
-#include "OpenGL/Program.h"
+// #include "OpenGL/Shader.h"
 
 #include "assert.h"
 #include "debug.h"
@@ -13,6 +12,7 @@
 #include "Win32/Win32Debug.h"
 #include "Win32/WGLExtensions.h"
 
+// NOTE (Emil): This brings in the OpenGL function declarations used in LoadFunctions (void).
 #include "OpenGL/Functions.inl"
 
 namespace Capstan
@@ -23,14 +23,12 @@ namespace Capstan
 
     // NOTE (Emil): These are for the tutorial, void Tutorial (void).
     internal GLuint vertexArrayObject = 0;
-    internal Program shaderProgram;
-
 
 
     #define GetFunctionAddress(type, name) name = (type)wglGetProcAddress(#name); \
                     assert(name != 0 || name != (void*)0x1 || name != (void*)0x2 || name != (void*)0x3 || name != (void*)-1)
 
-    void OpenGL::LoadFunctions (void)
+    void LoadFunctions (void)
     {
         GetFunctionAddress(PFNGLGENBUFFERSPROC,              glGenBuffers);
         GetFunctionAddress(PFNGLBINDBUFFERPROC,              glBindBuffer);
@@ -219,7 +217,7 @@ namespace Capstan
     }
 
 
-    internal void SetUp (void)
+    internal void Setup (void)
     {
         glViewport(0, 0, 800, 600);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -241,8 +239,24 @@ namespace Capstan
     }
 
 
-    internal void Tutorial (void)
+    OpenGL::OpenGL (void) : shader(nullptr) { }
+
+
+    OpenGL::~OpenGL (void)
     {
+        delete this->shader;
+    }
+
+
+    void OpenGL::StartUp (void)
+    {
+        CreateContext();
+        LoadFunctions();
+        Setup();
+
+        // BEGIN Tutorial
+        // This code should not be here after this is more fleshed out.
+
         GLfloat vertices[] = {
             -0.5f, -0.5f, 0.0f,
              0.5f, -0.5f, 0.0f,
@@ -274,32 +288,9 @@ namespace Capstan
         // NOTE (Emil): Unbind the VAO
         glBindVertexArray(0);
 
-        Shader vertexShader = Shader("shaders/simple.vert", ShaderStage::Vertex);
-        Shader fragmentShader = Shader("shaders/simple.frag", ShaderStage::Fragment);
+        this->shader = new Shader("shaders/simple.vert", "shaders/simple.frag");
 
-        shaderProgram = Program();
-
-        shaderProgram.Attach(vertexShader);
-        shaderProgram.Attach(fragmentShader);
-
-        shaderProgram.Link();
-
-        shaderProgram.Use();
-    }
-
-
-    OpenGL::OpenGL (void) { }
-
-
-    OpenGL::~OpenGL (void) { }
-
-
-    void OpenGL::StartUp (void)
-    {
-        CreateContext();
-        LoadFunctions();
-        SetUp();
-        Tutorial();
+        this->shader->Use();
     }
 
 
@@ -313,7 +304,7 @@ namespace Capstan
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shaderProgram.Use();
+        this->shader->Use();
 
         glBindVertexArray(vertexArrayObject);
         glDrawArrays(GL_TRIANGLES, 0, 3);

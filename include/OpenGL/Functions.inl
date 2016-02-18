@@ -10,6 +10,7 @@ PFNGLGETSHADERIVPROC              glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog;
 
 PFNGLCREATEPROGRAMPROC            glCreateProgram;
+PFNGLDELETEPROGRAMPROC            glDeleteProgram;
 PFNGLATTACHSHADERPROC             glAttachShader;
 PFNGLLINKPROGRAMPROC              glLinkProgram;
 PFNGLUSEPROGRAMPROC               glUseProgram;
