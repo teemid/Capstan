@@ -40,7 +40,7 @@ namespace Capstan
         return (Int64)fileSize.QuadPart;
     }
 
-    void Read (char * filename, void * buffer, size_t size)
+    void Read (char * filename, void * buffer, size_t size, size_t offset)
     {
         HANDLE fileHandle = CreateFile(
             (LPCSTR)filename,
@@ -48,6 +48,7 @@ namespace Capstan
             FILE_SHARE_READ,
             NULL,
             OPEN_EXISTING,
+            // FILE_FLAG_RANDOM_ACCESS
             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,
             NULL
         );
@@ -58,6 +59,25 @@ namespace Capstan
             auto result = ::GetFileSizeEx(fileHandle, &fileSize);
 
             size = fileSize.QuadPart;
+        }
+
+        if (offset != 0)
+        {
+            LARGE_INTEGER li;
+
+            li.QuadPart = offset;
+
+            li.LowPart = SetFilePointer(
+                fileHandle,
+                li.LowPart,
+                &li.HighPart,
+                FILE_BEGIN
+            );
+
+            if (li.LowPart == INVALID_SET_FILE_POINTER)
+            {
+
+            }
         }
 
         if (fileHandle == INVALID_HANDLE_VALUE) {
