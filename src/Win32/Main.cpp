@@ -97,6 +97,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
 #endif
 
     Capstan::System::Start(Capstan::System::Type::Memory, MB(400));
+    Capstan::System::Start(Capstan::System::Type::FileSystem);
     Capstan::System::Start(Capstan::System::Type::Asset, MB(200));
     Capstan::System::Start(Capstan::System::Type::Renderer);
 
