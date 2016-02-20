@@ -2,7 +2,6 @@
 #define CAPSTAN_RESOURCE_MANAGER_H
 
 
-#include "assets.h"
 #include "types.h"
 
 
@@ -19,11 +18,25 @@ namespace Capstan
         SHADER
     };
 
+
     struct Asset
     {
         AssetId id;
         AssetType type;
         void * asset;
+    };
+
+    struct ShaderAsset
+    {
+        char * source;
+        Int64 size;
+    };
+
+    struct BitmapAsset
+    {
+        Int32 width;
+        Int32 height;
+        void * data;
     };
 
     class AssetManager

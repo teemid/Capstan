@@ -1,4 +1,3 @@
-#include "assets.h"
 #include "AssetManager.h"
 
 #include "FileSystem.h"
@@ -13,19 +12,10 @@ namespace Capstan
 
     void AssetManager::StartUp (size_t size)
     {
-        MemoryManager * gMemoryManager = (MemoryManager *)System::Get(System::Type::Memory);
-
-        gMemoryManager->Allocate(assets, size);
-
         this->current = 0;
     }
 
-    void AssetManager::ShutDown (void)
-    {
-        MemoryManager * gMemoryManager = (MemoryManager *)System::Get(System::Type::Memory);
-
-        gMemoryManager->Free(assets);
-    }
+    void AssetManager::ShutDown (void) { }
 
     void AssetManager::LoadResource (char * filename)
     {
@@ -35,11 +25,16 @@ namespace Capstan
     ShaderAsset AssetManager::LoadShader (char * filename)
     {
         ShaderAsset asset = {};
-        asset.size = GetFileSize(filename);
+        FileSystem::File file;
+        FileSystem::Open(filename, &file);
 
-        asset.source = (char *)Core::Malloc(asset.size);
+        asset.size = file.size;
 
-        Read(filename, (void *)asset.source, asset.size);
+        asset.source = (char *)Core::Malloc((size_t)asset.size);
+
+        FileSystem::Read(&file, (void *)asset.source, file.size);
+
+        FileSystem::Close(&file);
 
         return asset;
     }
