@@ -1,5 +1,7 @@
 #include <windows.h>
 
+#include "assert.h"
+#include "debug.h"
 #include "Win32/Win32Debug.h"
 #include "memory.h"
 #include "MemoryManager.h"
@@ -32,24 +34,31 @@ namespace Capstan
         }
     }
 
-    Bool32 MemoryManager::Allocate (void * memory, size_t size)
+    void * MemoryManager::Allocate (size_t size)
     {
         // NOTE (Emil): More memory than we have.
         if (size > (UInt64)((Byte *)this->end - (Byte *)this->start))
         {
-            return false;
+            Debug::OutputString("Asked for more memory than the manager has.");
+            assert(0);
+
+            return nullptr;
         }
 
         // NOTE (Emil): Asked for more memory than is left.
         if (size > (UInt64)((Byte *)this->end - (Byte *)this->top))
         {
-            return false;
+            Debug::OutputString("Asked for more memory than the manager has.");
+            assert(0);
+
+            return nullptr;
         }
 
+        void * memory = this->current;
         this->current = this->top;
         this->top = (Byte *)this->top + size;
 
-        return true;
+        return this->current;
     }
 
     Bool32 MemoryManager::Free (void * memory)

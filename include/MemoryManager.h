@@ -7,6 +7,13 @@
 
 namespace Capstan
 {
+    enum class ManagerType
+    {
+        StackAllocator,
+        DoubleStackAllocator,
+        PoolAllocator
+    };
+
     class MemoryManager
     {
     public:
@@ -16,7 +23,7 @@ namespace Capstan
         void StartUp (size_t reserveSize);
         void ShutDown (void);
 
-        Bool32 Allocate (void * memory, size_t size);
+        void * Allocate (size_t size);
         Bool32 Free (void * memory);
     private:
         void * top;
