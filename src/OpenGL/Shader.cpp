@@ -1,7 +1,6 @@
 #include "OpenGL/Shader.h"
 
 #include "AssetManager.h"
-#include "assets.h"
 #include "assert.h"
 #include "debug.h"
 #include "memory.h"
