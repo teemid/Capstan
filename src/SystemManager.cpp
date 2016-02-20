@@ -24,6 +24,10 @@ namespace System
 
                 va_end(args);
             } break;
+            case Type::FileSystem:
+            {
+                gFileSystem.StartUp();
+            } break;
             case Type::Renderer:
             {
                 gRenderManager.StartUp();
@@ -58,6 +62,10 @@ namespace System
             case Type::Asset:
             {
                 gAssetManager.ShutDown();
+            } break;
+            case Type::FileSystem:
+            {
+                gFileSystem.ShutDown();
             } break;
             case Type::Renderer:
             {

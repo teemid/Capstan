@@ -4,6 +4,7 @@
 
 #include "AssetManager.h"
 #include "debug.h"
+#include "FileSystem.h"
 #include "MemoryManager.h"
 #include "RenderManager.h"
 #include "types.h"
@@ -15,14 +16,16 @@ namespace System
 {
     enum class Type
     {
-        Asset = 0,
-        Memory = 1,
-        Renderer = 3
+        Asset,
+        FileSystem,
+        Memory,
+        Renderer
     };
 
     internal RenderManager gRenderManager;
     internal MemoryManager gMemoryManager;
     internal AssetManager gAssetManager;
+    internal FileSystem gFileSystem;
 
     void * Get (Type system);
     Bool32 Start (Type system, ...);
