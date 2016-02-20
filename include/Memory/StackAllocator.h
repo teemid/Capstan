@@ -2,6 +2,9 @@
 #define CAPSTAN_MEMORY_STACK_ALLOCATOR_H
 
 
+#include "types.h"
+
+
 namespace Capstan
 {
     struct StackAllocation

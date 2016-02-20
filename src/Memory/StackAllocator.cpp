@@ -8,7 +8,7 @@ namespace Capstan
 {
     StackAllocator::StackAllocator (Int64 size)
     {
-        this->memory = Core::Malloc(size);
+        this->memory = Core::Malloc((size_t)size);
         this->top = this->memory;
         this->end = (void * )((Byte *)this->memory + size);
     }
