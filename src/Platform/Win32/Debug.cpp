@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "debug.h"
-#include "Win32/Win32Debug.h"
+#include "Platform/Debug.h"
+#include "Platform/Win32/Debug.h"
 
 
 namespace Capstan

@@ -1,9 +1,10 @@
 #include "OpenGL/Shader.h"
 
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
+#include "Platform/memory.h"
+
 #include "AssetManager.h"
-#include "assert.h"
-#include "debug.h"
-#include "memory.h"
 #include "SystemManager.h"
 
 

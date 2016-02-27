@@ -1,10 +1,10 @@
 #ifndef CAPSTAN_OPENGL_H
 #define CAPSTAN_OPENGL_H
 
-
 #include "OpenGL/gl.h"
-#include "RenderManager.h"
 #include "OpenGL/Shader.h"
+
+#include "Renderer.h"
 
 
 namespace Capstan

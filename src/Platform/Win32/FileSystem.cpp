@@ -1,10 +1,12 @@
 #include <windows.h>
 
-#include "assert.h"
-#include "FileSystem.h"
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
+#include "Platform/FileSystem.h"
+#include "Platform/Win32/Debug.h"
+
 #include "MemoryManager.h"
 #include "SystemManager.h"
-#include "Win32/Win32Debug.h"
 
 
 namespace Capstan

@@ -1,6 +1,0 @@
-#ifndef CAPSTAN_THREADING_H
-#define CAPSTAN_THREADING_H
-
-
-
-#endif

@@ -1,10 +1,10 @@
 #include <windows.h>
 #include <XInput.h>
 
+#include "Platform/GamePad.h"
+#include "Platform/Memory.h"
 
-#include "GamePad.h"
-#include "math.h"
-#include "memory.h"
+#include "MyMath.h"
 #include "types.h"
 
 
@@ -28,7 +28,7 @@ namespace Capstan
 
     void GamePad::Initialize (void)
     {
-        platform = (PlatformData *)Core::Malloc(sizeof(PlatformData));
+        platform = (PlatformData *)Memory::Allocate(sizeof(PlatformData));
 
         platform->xinput = LoadLibrary("Xinput1_4.dll");
 

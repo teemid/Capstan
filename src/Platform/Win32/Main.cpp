@@ -2,14 +2,16 @@
 #include <windows.h>
 #include <Wingdi.h>
 
-#include "assert.h"
-#include "debug.h"
-#include "types.h"
-#include "vector.h"
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
+
+#include "AssetManager.h"
 #include "RenderManager.h"
 #include "MemoryManager.h"
 #include "SystemManager.h"
 
+#include "types.h"
+#include "vector.h"
 
 #define FRAME_RATE (60)
 #define FRAME_MS (FRAME_RATE / 1.0)
@@ -102,10 +104,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     Capstan::System::Start(Capstan::System::Type::Renderer);
 
     Capstan::RenderManager * gRenderManager = (Capstan::RenderManager *)Capstan::System::Get(Capstan::System::Type::Renderer);
+    Capstan::AssetManager * gAssetManager = (Capstan::AssetManager *)Capstan::System::Get(Capstan::System::Type::Asset);
+    gAssetManager->LoadTexture("images/hud_heartFull.bmp");
     gRunning = true;
 
     double delta, interval;
     LARGE_INTEGER frequency, elapsed, current, previous;
+
+
 
     // Returns counts/s
     QueryPerformanceFrequency(&frequency);
@@ -147,6 +153,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     }
 
     Capstan::System::ShutDown(Capstan::System::Type::Renderer);
+    Capstan::System::ShutDown(Capstan::System::Type::Asset);
+    Capstan::System::ShutDown(Capstan::System::Type::FileSystem);
     Capstan::System::ShutDown(Capstan::System::Type::Memory);
 
 #ifdef CAPSTAN_CONSOLE

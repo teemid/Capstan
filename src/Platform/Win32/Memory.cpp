@@ -1,15 +1,14 @@
 #include <windows.h>
 
-
-#include "Win32/Win32Debug.h"
-#include "memory.h"
+#include "Platform/Win32/Debug.h"
+#include "Platform/Memory.h"
 
 
 namespace Capstan
 {
-namespace Core
+namespace Memory
 {
-    void * Malloc (size_t size)
+    void * Allocate (size_t size)
     {
         if (size == 0)
         {
@@ -20,9 +19,9 @@ namespace Core
     }
 
 
-    void * Realloc (void * memory, size_t prevSize, size_t newSize)
+    void * Reallocate (void * memory, size_t prevSize, size_t newSize)
     {
-        void * newMemory = Malloc(newSize);
+        void * newMemory = Allocate(newSize);
 
         if (newMemory)
         {

@@ -1,10 +1,11 @@
 #ifndef CAPSTAN_GL_H
 #define CAPSTAN_GL_H
 
+#ifdef CAPSTAN_WIN32
 #include <windows.h>
+#endif
 #include <gl/Gl.h>
 #include "gl/glext.h"
-#include "Win32/WGLExtensions.h"
 
 
 extern PFNGLGENBUFFERSPROC               glGenBuffers;
@@ -32,9 +33,6 @@ extern PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribPointer;
 
 extern PFNGLGENVERTEXARRAYSPROC          glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC          glBindVertexArray;
-
-extern PFNWGLGETEXTENSIONSSTRINGARB      wglGetExtensionsStringARB;
-extern PFNWGLCREATECONTEXTATTRIBSARB     wglCreateContextAttribsARB;
 
 
 namespace Capstan

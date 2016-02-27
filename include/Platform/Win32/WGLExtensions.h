@@ -12,6 +12,9 @@ typedef const char * (* PFNWGLGETEXTENSIONSSTRINGARB) (HDC hdc);
 // HGLRC wglCreateContextAttribsARB(HDC hDC, HGLRC hShareContext, const int *attribList);
 typedef HGLRC (* PFNWGLCREATECONTEXTATTRIBSARB) (HDC hdc, HGLRC hShareContext, const int * attribList);
 
+extern PFNWGLGETEXTENSIONSSTRINGARB      wglGetExtensionsStringARB;
+extern PFNWGLCREATECONTEXTATTRIBSARB     wglCreateContextAttribsARB;
+
 // Accepted as an attribute name in <*attribList>:
 
 #define WGL_CONTEXT_MAJOR_VERSION_ARB           0x2091

@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 
-#include "assert.h"
+#include "Platform/Assert.h"
 
 
 namespace Capstan

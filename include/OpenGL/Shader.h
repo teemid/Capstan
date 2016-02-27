@@ -1,12 +1,6 @@
 #ifndef CAPSTAN_OPENGL_SHADER_H
 #define CAPSTAN_OPENGL_SHADER_H
 
-namespace Capstan
-{
-    class Shader;
-}
-
-
 #include "OpenGL/gl.h"
 #include "types.h"
 

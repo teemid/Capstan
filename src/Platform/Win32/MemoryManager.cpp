@@ -1,9 +1,10 @@
 #include <windows.h>
 
-#include "assert.h"
-#include "debug.h"
-#include "Win32/Win32Debug.h"
-#include "memory.h"
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
+#include "Platform/Memory.h"
+#include "Platform/Win32/Debug.h"
+
 #include "MemoryManager.h"
 
 
@@ -14,7 +15,7 @@ namespace Capstan
 
     void MemoryManager::StartUp (size_t reserveSize)
     {
-        start = Core::Malloc(reserveSize);
+        start = Memory::Allocate(reserveSize);
 
         if (!start)
         {
@@ -28,7 +29,7 @@ namespace Capstan
 
     void MemoryManager::ShutDown (void)
     {
-        if (!Core::Free(start))
+        if (!Memory::Free(start))
         {
             Debug::Win32HandleError();
         }

@@ -1,58 +1,52 @@
 #include "OpenGL/OpenGL.h"
-// #include "OpenGL/Shader.h"
 
-#include "assert.h"
-#include "debug.h"
-#include "FileSystem.h"
-#include "types.h"
+
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
+#include "Platform/FileSystem.h"
+#include "Platform/Memory.h"
+#include "Platform/OpenGLContext.h"
+#include "Platform/Win32/Debug.h"
+#include "Platform/Win32/WGLExtensions.h"
 
 #include "strings.h"
+#include "types.h"
 #include "utils.h"
-#include "memory.h"
-#include "Win32/Win32Debug.h"
-#include "Win32/WGLExtensions.h"
+
 
 // NOTE (Emil): This brings in the OpenGL function declarations used in LoadFunctions (void).
 #include "OpenGL/Functions.inl"
 
+
 namespace Capstan
 {
-    internal HDC deviceContext = 0;
-    internal HGLRC renderContext = 0;
-
-
-    // NOTE (Emil): These are for the tutorial, void Tutorial (void).
-    internal GLuint vertexArrayObject = 0;
-
-
-    #define GetFunctionAddress(type, name) name = (type)wglGetProcAddress(#name); \
-                    assert(name != 0 || name != (void*)0x1 || name != (void*)0x2 || name != (void*)0x3 || name != (void*)-1)
+    #define GetFunction(type, name) name = (type)Platform::GetFunctionAddress(#name)
 
     void LoadFunctions (void)
     {
-        GetFunctionAddress(PFNGLGENBUFFERSPROC,              glGenBuffers);
-        GetFunctionAddress(PFNGLBINDBUFFERPROC,              glBindBuffer);
-        GetFunctionAddress(PFNGLBUFFERDATAPROC,              glBufferData);
+        GetFunction(PFNGLGENBUFFERSPROC,              glGenBuffers             );
+        GetFunction(PFNGLBINDBUFFERPROC,              glBindBuffer             );
+        GetFunction(PFNGLBUFFERDATAPROC,              glBufferData             );
 
-        GetFunctionAddress(PFNGLCREATESHADERPROC,            glCreateShader);
-        GetFunctionAddress(PFNGLDELETESHADERPROC,            glDeleteShader);
-        GetFunctionAddress(PFNGLSHADERSOURCEPROC,            glShaderSource);
-        GetFunctionAddress(PFNGLCOMPILESHADERPROC,           glCompileShader);
-        GetFunctionAddress(PFNGLGETSHADERIVPROC,             glGetShaderiv);
-        GetFunctionAddress(PFNGLGETSHADERINFOLOGPROC,        glGetShaderInfoLog);
+        GetFunction(PFNGLCREATESHADERPROC,            glCreateShader           );
+        GetFunction(PFNGLDELETESHADERPROC,            glDeleteShader           );
+        GetFunction(PFNGLSHADERSOURCEPROC,            glShaderSource           );
+        GetFunction(PFNGLCOMPILESHADERPROC,           glCompileShader          );
+        GetFunction(PFNGLGETSHADERIVPROC,             glGetShaderiv            );
+        GetFunction(PFNGLGETSHADERINFOLOGPROC,        glGetShaderInfoLog       );
 
-        GetFunctionAddress(PFNGLCREATEPROGRAMPROC,           glCreateProgram);
-        GetFunctionAddress(PFNGLATTACHSHADERPROC,            glAttachShader);
-        GetFunctionAddress(PFNGLLINKPROGRAMPROC,             glLinkProgram);
-        GetFunctionAddress(PFNGLUSEPROGRAMPROC,              glUseProgram);
-        GetFunctionAddress(PFNGLGETPROGRAMIVPROC,            glGetProgramiv);
-        GetFunctionAddress(PFNGLGETPROGRAMINFOLOGPROC,       glGetProgramInfoLog);
+        GetFunction(PFNGLCREATEPROGRAMPROC,           glCreateProgram          );
+        GetFunction(PFNGLATTACHSHADERPROC,            glAttachShader           );
+        GetFunction(PFNGLLINKPROGRAMPROC,             glLinkProgram            );
+        GetFunction(PFNGLUSEPROGRAMPROC,              glUseProgram             );
+        GetFunction(PFNGLGETPROGRAMIVPROC,            glGetProgramiv           );
+        GetFunction(PFNGLGETPROGRAMINFOLOGPROC,       glGetProgramInfoLog      );
 
-        GetFunctionAddress(PFNGLVERTEXATTRIBPOINTERPROC,     glVertexAttribPointer);
-        GetFunctionAddress(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+        GetFunction(PFNGLVERTEXATTRIBPOINTERPROC,     glVertexAttribPointer    );
+        GetFunction(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
 
-        GetFunctionAddress(PFNGLGENVERTEXARRAYSPROC,         glGenVertexArrays);
-        GetFunctionAddress(PFNGLBINDVERTEXARRAYPROC,         glBindVertexArray);
+        GetFunction(PFNGLGENVERTEXARRAYSPROC,         glGenVertexArrays        );
+        GetFunction(PFNGLBINDVERTEXARRAYPROC,         glBindVertexArray        );
     }
 
 
@@ -68,155 +62,6 @@ namespace Capstan
     }
 
 
-    internal void CreateTemporaryContext(PIXELFORMATDESCRIPTOR * desiredPixelFormat)
-    {
-        int pixelFormat = ChoosePixelFormat(deviceContext, desiredPixelFormat);
-
-        assert(pixelFormat);
-
-        PIXELFORMATDESCRIPTOR suggestedPixelFormat = {};
-        assert(DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggestedPixelFormat), &suggestedPixelFormat));
-
-        assert(SetPixelFormat(deviceContext, pixelFormat, &suggestedPixelFormat));
-
-        renderContext = wglCreateContext(deviceContext);
-
-        assert(renderContext);
-
-        wglMakeCurrent(deviceContext, renderContext);
-    }
-
-
-    internal void DeleteContext (void)
-    {
-        if (!renderContext)
-        {
-            Debug::OutputString("Tried to delete a render context with no current context.");
-            return;
-        }
-
-        wglMakeCurrent(NULL, NULL);
-        wglDeleteContext(renderContext);
-        renderContext = 0;
-    }
-
-
-    internal Bool32 GetWglARBFunctions ()
-    {
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARB)wglGetProcAddress("wglGetExtensionsStringARB");
-
-        if (!wglGetExtensionsStringARB)
-        {
-            Debug::Win32HandleError();
-        }
-
-        const char * extensions = wglGetExtensionsStringARB(deviceContext);
-
-        Bool32 HasWglARBCreateContext = Find(extensions, "WGL_ARB_create_context");
-        Bool32 HasWglARBCreateContextProfile = Find(extensions, "WGL_ARB_create_context_profile");
-
-        if (HasWglARBCreateContext && HasWglARBCreateContextProfile)
-        {
-            wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARB)wglGetProcAddress("wglCreateContextAttribsARB");
-
-            assert(wglCreateContextAttribsARB);
-        }
-
-        return (HasWglARBCreateContext && HasWglARBCreateContextProfile && wglCreateContextAttribsARB);
-    }
-
-
-    internal int CreateContext (void)
-    {
-        HWND windowHandle = GetActiveWindow();
-        deviceContext = GetDC(windowHandle);
-
-        PIXELFORMATDESCRIPTOR desiredPixelFormat = {};
-        desiredPixelFormat.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-        desiredPixelFormat.nVersion = 1;
-        desiredPixelFormat.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-        desiredPixelFormat.iPixelType = PFD_TYPE_RGBA;
-        desiredPixelFormat.cColorBits = 24;
-        desiredPixelFormat.cAlphaBits = 8;
-        desiredPixelFormat.cAccumBits = 0;
-        desiredPixelFormat.cDepthBits = 24;
-        desiredPixelFormat.cStencilBits = 8;
-
-        CreateTemporaryContext(&desiredPixelFormat);
-        GetWglARBFunctions();
-        DeleteContext();
-
-        int pixelFormat = ChoosePixelFormat(deviceContext, &desiredPixelFormat);
-
-        if (!pixelFormat)
-        {
-            Debug::Win32HandleError();
-
-            return 1;
-        }
-
-        PIXELFORMATDESCRIPTOR suggestedPixelFormat = {};
-
-        if (!DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggestedPixelFormat), &suggestedPixelFormat))
-        {
-            Debug::Win32HandleError();
-
-            return 2;
-        }
-
-        if (!SetPixelFormat(deviceContext, pixelFormat, &suggestedPixelFormat))
-        {
-            Debug::Win32HandleError();
-
-            return 3;
-        }
-
-        int attributes[] = {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-            WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-            WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-            0
-        };
-
-        renderContext = wglCreateContextAttribsARB(deviceContext, 0, attributes);
-
-        if (!renderContext)
-        {
-            GetError();
-            Debug::Win32HandleError();
-
-            return 4;
-        }
-
-        if (!wglMakeCurrent(deviceContext, renderContext))
-        {
-            Debug::Win32HandleError();
-
-            return 5;
-        }
-
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARB)wglGetProcAddress("wglGetExtensionsStringARB");
-
-        if (wglGetExtensionsStringARB)
-        {
-            const char * wglExtensions = wglGetExtensionsStringARB(deviceContext);
-
-            Debug::OutputString((char *)wglExtensions);
-        }
-        else
-        {
-            Debug::Win32HandleError();
-
-            return 6;
-        }
-
-        Debug::OutputString((char *)glGetString(GL_VENDOR));
-        Debug::OutputString((char *)glGetString(GL_VERSION));
-
-        return 0;
-    }
-
-
     internal void Setup (void)
     {
         glViewport(0, 0, 800, 600);
@@ -228,17 +73,6 @@ namespace Capstan
     }
 
 
-    internal void SwapBuffers (void)
-    {
-        assert(deviceContext)
-
-        if (!::SwapBuffers(deviceContext))
-        {
-            Debug::Win32HandleError();
-        }
-    }
-
-
     OpenGL::OpenGL (void) : shader(nullptr) { }
 
 
@@ -247,10 +81,12 @@ namespace Capstan
         delete this->shader;
     }
 
+    // NOTE (Emil): These are for the tutorial, void Tutorial (void).
+    internal GLuint vertexArrayObject = 0;
 
     void OpenGL::StartUp (void)
     {
-        CreateContext();
+        Platform::CreateContext();
         LoadFunctions();
         Setup();
 
@@ -296,7 +132,7 @@ namespace Capstan
 
     void OpenGL::ShutDown (void)
     {
-        DeleteContext();
+        Platform::DeleteContext();
     }
 
 
@@ -310,7 +146,7 @@ namespace Capstan
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
-        SwapBuffers();
+        Platform::SwapBuffers();
     }
 
 }
