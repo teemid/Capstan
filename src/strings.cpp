@@ -3,9 +3,28 @@
 
 namespace Capstan
 {
+namespace String
+{
+    Bool32 Compare (const char * s1, const char * s2, UInt32 length)
+    {
+        UInt32 i = 0;
+
+        while (i < length)
+        {
+            if (s1[i] != s2[i])
+            {
+                return false;
+            }
+
+            ++i;
+        }
+
+        return true;
+    }
+
     Bool32 Compare (const char * s1, const char * s2)
     {
-        Int32 i = 0;
+        UInt32 i = 0;
 
         while (s1[i] != '\0')
         {
@@ -16,13 +35,15 @@ namespace Capstan
             i++;
         }
 
-        return (s2[i] != '\0');
+        return (s2[i] == '\0');
     }
 
+    // TODO (Emil): Implement less naive version?
     Bool32 Find (const char * string, const char * pattern)
     {
-        Int32 i = 0;
-        Int32 j = 0;
+        UInt32 i = 0;
+        UInt32 j = 0;
+
         while (string[i] != '\0')
         {
             if (string[i] == pattern[0])
@@ -41,4 +62,5 @@ namespace Capstan
 
         return false;
     }
+}
 }

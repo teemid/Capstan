@@ -1,7 +1,6 @@
 #include "RenderManager.h"
-#ifndef CAPSTAN_OPENGL_H
 #include "OpenGL/OpenGL.h"
-#endif
+
 
 namespace Capstan
 {

@@ -18,7 +18,6 @@ namespace Capstan
         SHADER
     };
 
-
     struct Asset
     {
         AssetId id;
@@ -32,7 +31,7 @@ namespace Capstan
         Int64 size;
     };
 
-    struct BitmapAsset
+    struct ImageAsset
     {
         Int32 width;
         Int32 height;
@@ -50,6 +49,7 @@ namespace Capstan
 
         void LoadResource (char * filename);
         ShaderAsset LoadShader (char * filename);
+        ImageAsset LoadTexture (char * filename);
         void Unload (Asset asset);
     private:
         Asset assets[MAX_ASSET_COUNT];

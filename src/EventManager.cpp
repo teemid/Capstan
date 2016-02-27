@@ -3,8 +3,8 @@
 
 namespace Capstan
 {
-    EventManager::EventManager () {};
-    EventManager::~EventManager () {};
+    EventManager::EventManager (void) { };
+    EventManager::~EventManager (void) { };
 
     void EventManager::StartUp (void)
     {

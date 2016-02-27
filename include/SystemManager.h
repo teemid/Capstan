@@ -1,10 +1,9 @@
 #ifndef CAPSTAN_SYSTEM_MANAGER_H
 #define CAPSTAN_SYSTEM_MANAGER_H
 
+#include "Platform/FileSystem.h"
 
 #include "AssetManager.h"
-#include "debug.h"
-#include "FileSystem.h"
 #include "MemoryManager.h"
 #include "RenderManager.h"
 #include "types.h"

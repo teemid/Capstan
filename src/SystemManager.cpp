@@ -1,8 +1,9 @@
 #include <stdarg.h>
 
-#include "SystemManager.h"
+#include "Platform/Assert.h"
+#include "Platform/Debug.h"
 
-#include "assert.h"
+#include "SystemManager.h"
 
 
 namespace Capstan

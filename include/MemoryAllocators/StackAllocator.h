@@ -7,25 +7,26 @@
 
 namespace Capstan
 {
+    typedef UInt32 StackMarker;
+
     struct StackAllocation
     {
         void * memory;
-        void * top;
+        StackMarker marker;
     };
-
 
     class StackAllocator
     {
     public:
-        StackAllocator (Int64 size);
+        StackAllocator (UInt64 size);
         ~StackAllocator (void);
 
-        StackAllocation Allocate (Int64 size);
+        StackAllocation Allocate (UInt32 size);
         void Free (StackAllocation allocation);
     private:
-        void * memory;
-        void * top;
+        void * start;
         void * end;
+        StackMarker marker;
     };
 }
 
