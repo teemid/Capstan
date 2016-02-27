@@ -2,3 +2,7 @@ build/
 
 # Visual Studio Files
 *.obj
+
+# Python
+__pycache__
+*.pyc
