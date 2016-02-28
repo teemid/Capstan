@@ -31,12 +31,14 @@ def create_build_dir():
 
 
 def compile_file(file):
-    cmd = [COMPILER.get('NAME', 'cl')]
-    cmd += COMPILER.get('FLAGS', [])
-    cmd.append(os.path.abspath(file.__str__()))
-    cmd += MACRO_DEFINITIONS
+    cmd = '{compiler} {flags} {filename} {macros}'.format(
+        compiler=COMPILER.get('NAME', 'cl'),
+        flags=' '.join(COMPILER.get('FLAGS', [])),
+        filename=os.path.abspath(file.__str__()),
+        macros=' '.join(MACRO_DEFINITIONS)
+    )
 
-    return cmd
+    return cmd.split()
 
 
 def link():
