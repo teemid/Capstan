@@ -69,6 +69,8 @@ namespace Capstan
 
         FileSystem::Read(&file, asset.data, bytes);
 
+        FileSystem::Close(&file);
+
         return asset;
     }
 }

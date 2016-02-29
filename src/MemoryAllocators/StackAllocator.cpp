@@ -47,6 +47,6 @@ namespace Capstan
             assert(false);
         }
 
-        this->marker = (Byte *)allocation.memory - (Byte *)this->start;
+        this->marker = (UInt32)((Byte *)allocation.memory - (Byte *)this->start);
     }
 }

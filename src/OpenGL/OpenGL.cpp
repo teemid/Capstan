@@ -151,7 +151,7 @@ namespace Capstan
 
         ImageAsset image = gAssetManager->LoadTexture("images/heart.bmp");
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

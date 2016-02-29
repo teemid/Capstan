@@ -208,7 +208,24 @@ namespace Platform
            (proc == (void*)0x3) || (proc == (void*)-1)
         )
         {
-            Debug::Win32HandleError();
+            // Failed to load from the new context, try loading directly from the opengl32.dll.
+            HMODULE dll = LoadLibrary("opengl32.dll");
+
+            if (dll == NULL)
+            {
+                Debug::Win32HandleError();
+
+                assert(false);
+            }
+
+            proc = (void *)GetProcAddress(dll, name);
+
+            if (proc == 0)
+            {
+                Debug::Win32HandleError();
+
+                assert(false);
+            }
         }
 
         return proc;
