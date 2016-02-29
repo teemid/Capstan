@@ -104,13 +104,11 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     Capstan::System::Start(Capstan::System::Type::Renderer);
 
     Capstan::RenderManager * gRenderManager = (Capstan::RenderManager *)Capstan::System::Get(Capstan::System::Type::Renderer);
-    Capstan::AssetManager * gAssetManager = (Capstan::AssetManager *)Capstan::System::Get(Capstan::System::Type::Asset);
-    gAssetManager->LoadTexture("images/hud_heartFull.bmp");
+
     gRunning = true;
 
     double delta, interval;
     LARGE_INTEGER frequency, elapsed, current, previous;
-
 
 
     // Returns counts/s
