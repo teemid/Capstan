@@ -1,14 +1,19 @@
+PFNGLVIEWPORTPROC                 glViewport;
+PFNGLGETERRORPROC                 glGetError;
+PFNGLCLEARCOLORPROC               glClearColor;
+PFNGLGETINTEGERVPROC              glGetIntegerv;
+PFNGLCLEARPROC                    glClear;
+PFNGLDRAWARRAYSPROC               glDrawArrays;
+PFNGLDRAWELEMENTSPROC             glDrawElements;
 PFNGLGENBUFFERSPROC               glGenBuffers;
 PFNGLBINDBUFFERPROC               glBindBuffer;
 PFNGLBUFFERDATAPROC               glBufferData;
-
 PFNGLCREATESHADERPROC             glCreateShader;
 PFNGLDELETESHADERPROC             glDeleteShader;
 PFNGLSHADERSOURCEPROC             glShaderSource;
 PFNGLCOMPILESHADERPROC            glCompileShader;
 PFNGLGETSHADERIVPROC              glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog;
-
 PFNGLCREATEPROGRAMPROC            glCreateProgram;
 PFNGLDELETEPROGRAMPROC            glDeleteProgram;
 PFNGLATTACHSHADERPROC             glAttachShader;
@@ -16,13 +21,13 @@ PFNGLLINKPROGRAMPROC              glLinkProgram;
 PFNGLUSEPROGRAMPROC               glUseProgram;
 PFNGLGETPROGRAMIVPROC             glGetProgramiv;
 PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog;
-
 PFNGLVERTEXATTRIBPOINTERPROC      glVertexAttribPointer;
 PFNGLENABLEVERTEXATTRIBARRAYPROC  glEnableVertexAttribArray;
-PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribPointer;
-
+PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
 PFNGLGENVERTEXARRAYSPROC          glGenVertexArrays;
 PFNGLBINDVERTEXARRAYPROC          glBindVertexArray;
-
-PFNWGLGETEXTENSIONSSTRINGARB      wglGetExtensionsStringARB;
-PFNWGLCREATECONTEXTATTRIBSARB     wglCreateContextAttribsARB;
+PFNGLGENTEXTURESPROC              glGenTextures;
+PFNGLBINDTEXTUREPROC              glBindTexture;
+PFNGLTEXPARAMETERIPROC            glTexParameteri;
+PFNGLTEXIMAGE2DPROC               glTexImage2D;
+PFNGLGENERATEMIPMAPPROC           glGenerateMipmap;

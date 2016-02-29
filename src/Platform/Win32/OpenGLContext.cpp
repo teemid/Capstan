@@ -12,6 +12,10 @@
 #include "strings.h"
 
 
+PFNWGLGETEXTENSIONSSTRINGARB      wglGetExtensionsStringARB;
+PFNWGLCREATECONTEXTATTRIBSARB     wglCreateContextAttribsARB;
+
+
 namespace Capstan
 {
 namespace Platform
@@ -188,9 +192,26 @@ namespace Platform
         return true;
     }
 
+
     void * GetFunctionAddress (char * name)
     {
-        return (void *)wglGetProcAddress(name);
+        void * proc = wglGetProcAddress(name);
+
+        /*
+            Although the specification says wglGetProcAddress only returns NULL on failure.
+            Some implementations also return 1, 2, 3 and -1.
+
+            https://msdn.microsoft.com/en-us/library/windows/desktop/dd374386%28v=vs.85%29.aspx
+            https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows
+        */
+        if( proc == 0 || (proc == (void*)0x1) || (proc == (void*)0x2) ||
+           (proc == (void*)0x3) || (proc == (void*)-1)
+        )
+        {
+            Debug::Win32HandleError();
+        }
+
+        return proc;
     }
 }
 }
