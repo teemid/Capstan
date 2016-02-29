@@ -1,4 +1,4 @@
-from .common import *
+from ..common import *
 
 
 LIBS = [
@@ -31,7 +31,6 @@ COMPILER = {
         '/nologo',
         '/MP',
         '/Od',
-        '/I', INCLUDE_DIR,
         '/c',
         '/MTd',
         '/WX',

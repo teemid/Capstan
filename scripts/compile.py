@@ -1,5 +1,66 @@
-from compile import compile
+import os
+from subprocess import run
+import pathlib
+
+from settings.platform.windows import (
+    BUILD_DIR,
+    COMPILER,
+    INCLUDE_DIRS,
+    LIBS,
+    LINKER,
+    MACRO_DEFINITIONS,
+    OUTPUT_FILENAME,
+    SOURCE_DIR,
+)
 
 
-if __name__ == '__main__':
-    compile()
+class WorkDirectory(object):
+    def __init__(self, new_work_dir):
+        self.new_work_dir = new_work_dir
+        self.cwd = os.getcwd()
+
+    def __enter__(self):
+        os.chdir(self.new_work_dir)
+
+    def __exit__(self, type, value, traceback):
+        os.chdir(self.cwd)
+
+
+def create_build_dir():
+    if not os.path.isdir(BUILD_DIR):
+        os.mkdir(BUILD_DIR)
+
+
+def compile_file(file):
+    cmd = '{compiler} {flags} {include_dirs} {filename} {macros}'.format(
+        compiler=COMPILER.get('NAME', 'cl'),
+        flags=' '.join(COMPILER.get('FLAGS', [])),
+        include_dirs=' '.join(['/I ' + d for d in INCLUDE_DIRS]),
+        filename=os.path.abspath(file.__str__()),
+        macros=' '.join(MACRO_DEFINITIONS)
+    )
+
+    return cmd.split()
+
+
+def link():
+    cmd = [LINKER.get('NAME', 'link')]
+    cmd += LINKER.get('FLAGS', [])
+    cmd += [
+        '/OUT:{0}.exe'.format(OUTPUT_FILENAME),
+        '*.obj'
+    ]
+    cmd += LIBS
+
+    return cmd
+
+
+def compile():
+    source_dir = pathlib.Path(SOURCE_DIR)
+    source_files = list(source_dir.glob('**/*.cpp'))
+
+    with WorkDirectory(BUILD_DIR):
+        for file in source_files:
+            run(compile_file(file))
+
+        run(link())

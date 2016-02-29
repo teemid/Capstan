@@ -1,4 +1,5 @@
 build/
+venv/
 
 # Visual Studio Files
 *.obj
