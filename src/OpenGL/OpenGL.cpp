@@ -80,10 +80,10 @@ namespace Capstan
 
         GLfloat vertices[] = {
             // Positions          // Colors           // Texture Coords
-             0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
-             0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
-            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
-            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
+            0.2f * 0.5f, 0.2f * 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
+            0.2f * 0.5f, 0.2f *-0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
+            0.2f *-0.5f, 0.2f *-0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+            0.2f *-0.5f, 0.2f * 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
         };
         GLuint indices[] = {  // Note that we start from 0!
             0, 1, 3, // First Triangle
@@ -151,7 +151,7 @@ namespace Capstan
 
         ImageAsset image = gAssetManager->LoadTexture("images/heart.bmp");
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

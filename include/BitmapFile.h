@@ -5,6 +5,12 @@
 
 namespace Capstan
 {
+    enum class Compression : UInt32
+    {
+        RGB = 0x1,
+        BITFIELDS = 0x3
+    };
+
     #pragma pack(push, 1)
 
     struct BitmapCoreHeader
@@ -23,7 +29,7 @@ namespace Capstan
         Int32  height;
         Int16  planes;
         Int16  bitsPerPixel;
-        UInt32 compression;
+        Compression compression;
         UInt32 imageSize;
         Int32  xPixelsPerMeter;
         Int32  yPixelsPerMeter;
