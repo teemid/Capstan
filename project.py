@@ -1,18 +1,19 @@
-import os
+from os.path import abspath, dirname, join
 import sys
 from argparse import ArgumentParser
 
-MANAGE = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(MANAGE, 'scripts'))
-sys.path.append(os.path.join(MANAGE, 'settings'))
+TOOLS_DIR = join(dirname(abspath(__file__)), 'tools')
+# sys.path.append(join(TOOLS_DIR, 'build'))
+# sys.path.append(join(TOOLS_DIR, 'settings'))
+sys.path.append(TOOLS_DIR)
 
 
 if __name__ == '__main__':
-    from scripts.compile import compile
-    from scripts.opengl import generate_function_declarations
+    from build import build
+    from opengl import generate_function_declarations
 
     FUNCTIONS = {
-        'compile': compile,
+        'build': build,
         'opengl': generate_function_declarations,
     }
 
