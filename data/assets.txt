@@ -1,0 +1,10 @@
+[Shader]
+tag=simple.frag
+path=simple.frag.glsl
+
+"simple.frag": "simple.frag.glsl"
+"simple.vert": "simple.vert.glsl"
+
+[Images]
+tag=heart
+path=images/heart.bmp

@@ -67,6 +67,7 @@ namespace Capstan
     // TODO (Emil): Remove tutorial code.
     internal GLuint vertexArrayObject = 0;
     internal GLuint texture = 0;
+    internal Matrix4f m;
 
     void OpenGL::StartUp (void)
     {
@@ -88,10 +89,8 @@ namespace Capstan
             0.2f *-0.5f, 0.2f *-0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
             0.2f *-0.5f, 0.2f * 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
         };
-        GLuint indices[] = {  // Note that we start from 0!
-            0, 1, 3, // First Triangle
-            1, 2, 3  // Second Triangle
-        };
+
+        GLuint indices[] = { 0, 1, 3, 1, 2, 3 };
 
         glGenVertexArrays(1, &vertexArrayObject);
         glBindVertexArray(vertexArrayObject);

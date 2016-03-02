@@ -5,6 +5,12 @@ namespace Capstan
 {
 namespace String
 {
+    struct String
+    {
+        char * string;
+        UInt32 length;
+    };
+
     Bool32 Compare (const char * s1, const char * s2, UInt32 length)
     {
         UInt32 i = 0;
@@ -61,6 +67,10 @@ namespace String
         }
 
         return false;
+    }
+
+    char ** Split (char * string, const char delimiter)
+    {
     }
 }
 }
