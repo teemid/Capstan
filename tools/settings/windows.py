@@ -18,6 +18,7 @@ MACRO_DEFINITIONS = ['/D' + macro for macro in MACROS]
 COMPILER = {
     'NAME': 'cl',
     # COMPILER OPTIONS
+    # /Oi    - Generate Intrinsic Functions
     # /Od    - Disable optimizations
     # /I     - Include directories
     # /c     - Compiles without linking
@@ -32,6 +33,8 @@ COMPILER = {
     'FLAGS': [
         '/nologo',
         '/MP',
+        '/fp:fast',
+        '/Oi',
         '/Od',
         '/c',
         '/MTd',

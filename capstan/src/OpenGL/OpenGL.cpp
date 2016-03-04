@@ -15,6 +15,7 @@
 #include "SystemManager.h"
 
 #include "Math/Matrix4f.h"
+#include "Math/Vector4f.h"
 
 #include "utils.h"
 
@@ -67,7 +68,6 @@ namespace Capstan
     // TODO (Emil): Remove tutorial code.
     internal GLuint vertexArrayObject = 0;
     internal GLuint texture = 0;
-    internal Matrix4f m;
 
     void OpenGL::StartUp (void)
     {
@@ -139,7 +139,6 @@ namespace Capstan
 
         glBindVertexArray(0);  // NOTE (Emil): Unbind the VAO
 
-
         AssetManager * gAssetManager = (AssetManager *)System::Get(System::Type::Asset);
 
         glGenTextures(1, &texture);
@@ -155,6 +154,11 @@ namespace Capstan
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        Vector4f v = { 1.0f, 1.0f, 1.0f, 1.0f };
+        Matrix4f m = Translate(Vector3f(1.0f, 1.0f, 0.0f));
+
+        v = m * v;
     }
 
 
