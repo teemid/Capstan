@@ -71,6 +71,7 @@ namespace String
 
     char ** Split (char * string, const char delimiter)
     {
+        return nullptr;
     }
 }
 }
