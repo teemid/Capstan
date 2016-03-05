@@ -55,7 +55,7 @@ def link():
     return cmd
 
 
-def compile():
+def build():
     source_dir = pathlib.Path(SOURCE_DIR)
     source_files = list(source_dir.glob('**/*.cpp'))
 
