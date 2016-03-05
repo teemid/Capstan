@@ -31,6 +31,7 @@ MACROS = [
     'CAPSTAN_DEBUG',
     'CAPSTAN_ASSERT',
     'CAPSTAN_CONSOLE',
+    'CAPSTAN_INTRINSICS',
 ]
 # ######### END MACROS ##########
 

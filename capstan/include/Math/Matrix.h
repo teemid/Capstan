@@ -2,6 +2,7 @@
 #define CAPSTAN_MATRIX_H
 
 #include "Math/Vector.h"
+#include "Math/Trigonometric.h"
 
 #include "Platform/Memory.h"
 #include "Platform/Types.h"
@@ -31,12 +32,6 @@ namespace Capstan
     typedef Matrix<Real32, 4> Matrix4f;
 
     template<typename T, UInt32 N>
-    Matrix<T, N> Translate (Vector<T, N> & v);
-
-    template<typename T, UInt32 N>
-    Matrix<T, N> Rotate (Vector<T, N> & v);
-
-    template<typename T, UInt32 N>
     Matrix<T, N>::Matrix (void)
     {
         Memory::Zero(data, sizof(T) * N);
@@ -64,6 +59,8 @@ namespace Capstan
         return result;
     }
 }
+
+#include "Math/Matrix4f.h"
 
 
 #endif

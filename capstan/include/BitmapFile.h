@@ -1,6 +1,7 @@
 #ifndef CAPSTAN_BITMAP_H
 #define CAPSTAN_BITMAP_H
 
+
 #include "Platform/Types.h"
 
 

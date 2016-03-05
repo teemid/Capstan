@@ -267,6 +267,11 @@ namespace Capstan
 
         return result;
     };
+
+    #include "Math/Vector2f.h"
+    #include "Math/Vector3f.h"
+    #include "Math/Vector4f.h"
 }
+
 
 #endif

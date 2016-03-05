@@ -5,7 +5,8 @@
 #include "Platform/Memory.h"
 #include "Platform/Types.h"
 
-#include "Math/Common.h"
+
+#include "Math/Arithmetic.h"
 
 
 typedef DWORD (* XInputGetStatePtr) (DWORD dwUserIndex, XINPUT_STATE * pState);

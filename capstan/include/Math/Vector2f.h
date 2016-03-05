@@ -1,116 +1,109 @@
 #ifndef CAPSTAN_MATH_VECTOR2_H
 #define CAPSTAN_MATH_VECTOR2_H
 
-#include "Math/Vector.h"
 
-
-namespace Capstan
+template<>
+struct Vector<Real32, 2>
 {
-    // typedef Vector<Real32, 2> Vector2f;
-
-    template<>
-    struct Vector<Real32, 2>
-    {
-        union {
-            Real32 data[2];
-            struct { Real32 x, y; };
-        };
-
-        Vector (void);
-        Vector (Real32 x);
-        Vector (Real32 x, Real32 y);
-
-        Vector2f operator +(const Vector2f & rhs);
-        Vector2f operator -(const Vector2f & rhs);
-        Vector2f operator *(const Vector2f & rhs);
-        Vector2f operator /(const Vector2f & rhs);
-
-        Vector2f operator +(const Real32 scalar);
-        Vector2f operator -(const Real32 scalar);
-        Vector2f operator *(const Real32 scalar);
-        Vector2f operator /(const Real32 scalar);
-
-        Bool32 operator ==(const Vector2f & rhs);
+    union {
+        Real32 data[2];
+        struct { Real32 x, y; };
     };
 
-    template<>
-    Real32 LengthSquared<Real32, 2> (Vector2f & v);
+    Vector (void);
+    Vector (Real32 x);
+    Vector (Real32 x, Real32 y);
 
-    template<>
-    Real32 Length<Real32, 2> (Vector2f & v);
+    Vector2f operator +(const Vector2f & rhs);
+    Vector2f operator -(const Vector2f & rhs);
+    Vector2f operator *(const Vector2f & rhs);
+    Vector2f operator /(const Vector2f & rhs);
 
-    template<>
-    Real32 Dot (Vector2f & v1, Vector2f & v2);
+    Vector2f operator +(const Real32 scalar);
+    Vector2f operator -(const Real32 scalar);
+    Vector2f operator *(const Real32 scalar);
+    Vector2f operator /(const Real32 scalar);
 
-    Vector2f Cross (Vector2f & v1, Vector2f & v2);
+    Bool32 operator ==(const Vector2f & rhs);
+};
 
-    template<>
-    Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t);
+template<>
+Real32 LengthSquared<Real32, 2> (Vector2f & v);
 
-    //==== Implementation begin ====//
-    Vector<Real32, 2>::Vector (void) : x(0), y(0) { };
+template<>
+Real32 Length<Real32, 2> (Vector2f & v);
 
-    Vector<Real32, 2>::Vector (Real32 x) : x(x), y(x) { };
+template<>
+Real32 Dot (Vector2f & v1, Vector2f & v2);
 
-    Vector<Real32, 2>::Vector (Real32 x, Real32 y) : x(x), y(y) { };
+Vector2f Cross (Vector2f & v1, Vector2f & v2);
 
-    Vector2f Vector<Real32, 2>::operator +(const Vector2f & rhs)
-    {
-        Vector2f v;
+template<>
+Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t);
 
-        v.x = x + rhs.x;
-        v.y = y + rhs.y;
+//==== Implementation begin ====//
+Vector<Real32, 2>::Vector (void) : x(0), y(0) { };
 
-        return v;
-    };
+Vector<Real32, 2>::Vector (Real32 x) : x(x), y(x) { };
 
-    Vector2f Vector<Real32, 2>::operator -(const Vector2f & rhs)
-    {
-        Vector2f v;
+Vector<Real32, 2>::Vector (Real32 x, Real32 y) : x(x), y(y) { };
 
-        v.x = x - rhs.x;
-        v.y = y - rhs.y;
+Vector2f Vector<Real32, 2>::operator +(const Vector2f & rhs)
+{
+    Vector2f v;
 
-        return v;
-    };
+    v.x = x + rhs.x;
+    v.y = y + rhs.y;
 
-    Vector2f Vector<Real32, 2>::operator *(const Vector2f & rhs)
-    {
-        Vector2f v;
+    return v;
+};
 
-        v.x = x * rhs.x;
-        v.y = y * rhs.y;
+Vector2f Vector<Real32, 2>::operator -(const Vector2f & rhs)
+{
+    Vector2f v;
 
-        return v;
-    };
+    v.x = x - rhs.x;
+    v.y = y - rhs.y;
 
-    Vector2f Vector<Real32, 2>::operator /(const Vector2f & rhs)
-    {
-        Vector2f v;
+    return v;
+};
 
-        v.x = x / rhs.x;
-        v.y = y / rhs.y;
+Vector2f Vector<Real32, 2>::operator *(const Vector2f & rhs)
+{
+    Vector2f v;
 
-        return v;
-    };
+    v.x = x * rhs.x;
+    v.y = y * rhs.y;
 
-    Bool32 Vector<Real32, 2>::operator ==(const Vector2f & rhs)
-    {
-        return (x == rhs.x && y == rhs.y);
-    };
+    return v;
+};
 
-    template<>
-    Real32 LengthSquared<Real32, 2> (Vector2f & v)
-    {
-        return v.x * v.x + v.y * v.y;
-    };
+Vector2f Vector<Real32, 2>::operator /(const Vector2f & rhs)
+{
+    Vector2f v;
 
-    template<>
-    Real32 Length<Real32, 2> (Vector2f & v)
-    {
-        return (v.x * v.x + v.y * v.y) / 2;
-    }
-    //==== Implementation end ====//
+    v.x = x / rhs.x;
+    v.y = y / rhs.y;
+
+    return v;
+};
+
+Bool32 Vector<Real32, 2>::operator ==(const Vector2f & rhs)
+{
+    return (x == rhs.x && y == rhs.y);
+};
+
+template<>
+Real32 LengthSquared<Real32, 2> (Vector2f & v)
+{
+    return v.x * v.x + v.y * v.y;
+};
+
+template<>
+Real32 Length<Real32, 2> (Vector2f & v)
+{
+    return (v.x * v.x + v.y * v.y) / 2;
 }
+//==== Implementation end ====//
 
 #endif
