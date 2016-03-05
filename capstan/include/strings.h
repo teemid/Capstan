@@ -14,7 +14,7 @@ namespace String
 
     Bool32 Find (const char * string, const char * pattern);
 
-    char * [] Split (char * string, const char delimiter);
+    char ** Split (char * string, const char delimiter);
 }
 }
 
