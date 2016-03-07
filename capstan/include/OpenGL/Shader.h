@@ -15,6 +15,13 @@ namespace Capstan
         Fragment
     };
 
+    enum class UniformType
+    {
+        Matrix4f,
+        Vector4f,
+        Float,
+        Int32
+    };
 
     class Shader
     {
@@ -22,6 +29,8 @@ namespace Capstan
         Shader (void);
         Shader (GLchar * vertexShader, GLchar * fragmentShader);
         ~Shader (void);
+
+        void SetUniform(char * name, UniformType type, void * value);
 
         void Use (void);
     private:

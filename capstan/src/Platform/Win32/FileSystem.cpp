@@ -50,7 +50,7 @@ namespace Capstan
 
         assert(accessRights);
 
-        Debug::OutputString("Access rights: %d\n", accessRights);
+        Debug::Print("Access rights: %d\n", accessRights);
 
         return accessRights;
     }
@@ -69,7 +69,7 @@ namespace Capstan
             fileAttributes |= FILE_FLAG_RANDOM_ACCESS;
         }
 
-        Debug::OutputString("File Attributes %d\n", fileAttributes);
+        Debug::Print("File Attributes %d\n", fileAttributes);
 
         return fileAttributes;
     }
@@ -184,7 +184,7 @@ namespace Capstan
     {
         if (file->platform->handle == INVALID_HANDLE_VALUE)
         {
-            Debug::OutputString("Tried to close an invalid file handle.");
+            Debug::Print("Tried to close an invalid file handle.");
 
             assert(0);
 

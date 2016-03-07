@@ -12,7 +12,7 @@ namespace Debug
 {
 #if defined CAPSTAN_DEBUG && CAPSTAN_CONSOLE
 
-    void OutputString (char * formattedString, ...)
+    void Print (char * formattedString, ...)
     {
         va_list args;
         va_start(args, formattedString);
@@ -22,7 +22,7 @@ namespace Debug
 
 #else
 
-    void OutputDebugString (char * formattedString, ...)
+    void Print (char * formattedString, ...)
     {
         va_list args;
         va_start(args, formattedString);

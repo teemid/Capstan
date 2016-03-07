@@ -46,7 +46,7 @@ namespace System
             } break;
             default:
             {
-                Debug::OutputString("Tried to start up illegal system.");
+                Debug::Print("Tried to start up illegal system.");
                 assert(false);
 
                 return false;
@@ -78,7 +78,7 @@ namespace System
             } break;
             default:
             {
-                Debug::OutputString("Tried to shut down illegal system.");
+                Debug::Print("Tried to shut down illegal system.");
                 assert(false);
 
                 return false;
@@ -112,7 +112,7 @@ namespace System
             } break;
             default:
             {
-                Debug::OutputString("Illegal system value");
+                Debug::Print("Illegal system value");
                 assert(false);
 
                 return nullptr;

@@ -31,6 +31,10 @@ FUNCTIONS = [
     'glGetShaderiv',
     'glGetShaderInfoLog',
 
+
+    'glGetUniformLocation',
+    'glUniformMatrix4fv',
+
     'glCreateProgram',
     'glDeleteProgram',
     'glAttachShader',

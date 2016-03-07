@@ -36,6 +36,24 @@ namespace Capstan
         glDeleteShader(fragment);
     }
 
+    void Shader::SetUniform (char * name, UniformType type, void * uniform)
+    {
+        GLuint location = glGetUniformLocation(this->program, name);
+
+        switch (type)
+        {
+            case UniformType::Matrix4f:
+            {
+                glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat *)uniform);
+            } break;
+            default:
+            {
+                Debug::Print("There is not default uniform type in Shader.SetUniform");
+                assert(0);
+            } break;
+        }
+    }
+
     GLuint Shader::Compile (GLenum shaderStage, GLchar ** shaderSource)
     {
         GLuint shader = glCreateShader(shaderStage);
@@ -49,7 +67,7 @@ namespace Capstan
         {
             GLchar info[512];
             glGetShaderInfoLog(shader, 512, NULL, info);
-            Debug::OutputString("Shader failed to compile: %s", info);
+            Debug::Print("Shader failed to compile: %s", info);
             assert(success);
         }
 
@@ -67,7 +85,7 @@ namespace Capstan
         {
             GLchar info[512];
             glGetProgramInfoLog(this->program, 512, NULL, info);
-            Debug::OutputString("Shader program failed to link: %s", info);
+            Debug::Print("Shader program failed to link: %s", info);
             assert(success);
         }
     }

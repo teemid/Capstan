@@ -40,7 +40,7 @@ namespace Capstan
         // NOTE (Emil): More memory than we have.
         if (size > (UInt64)((Byte *)this->end - (Byte *)this->start))
         {
-            Debug::OutputString("Asked for more memory than the manager has.");
+            Debug::Print("Asked for more memory than the manager has.");
             assert(0);
 
             return nullptr;
@@ -49,7 +49,7 @@ namespace Capstan
         // NOTE (Emil): Asked for more memory than is left.
         if (size > (UInt64)((Byte *)this->end - (Byte *)this->top))
         {
-            Debug::OutputString("Asked for more memory than the manager has.");
+            Debug::Print("Asked for more memory than the manager has.");
             assert(0);
 
             return nullptr;

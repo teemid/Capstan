@@ -14,6 +14,8 @@ PFNGLSHADERSOURCEPROC             glShaderSource;
 PFNGLCOMPILESHADERPROC            glCompileShader;
 PFNGLGETSHADERIVPROC              glGetShaderiv;
 PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog;
+PFNGLGETUNIFORMLOCATIONPROC       glGetUniformLocation;
+PFNGLUNIFORMMATRIX4FVPROC         glUniformMatrix4fv;
 PFNGLCREATEPROGRAMPROC            glCreateProgram;
 PFNGLDELETEPROGRAMPROC            glDeleteProgram;
 PFNGLATTACHSHADERPROC             glAttachShader;

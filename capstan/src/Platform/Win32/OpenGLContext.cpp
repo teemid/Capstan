@@ -123,7 +123,7 @@ namespace Platform
 
             if (code != GL_NO_ERROR)
             {
-                Debug::OutputString("OpenGL error: %d", code);
+                Debug::Print("OpenGL error: %d", code);
             }
 
             Debug::Win32HandleError();
@@ -144,7 +144,7 @@ namespace Platform
         {
             const char * wglExtensions = wglGetExtensionsStringARB(deviceContext);
 
-            Debug::OutputString((char *)wglExtensions);
+            Debug::Print((char *)wglExtensions);
         }
         else
         {
@@ -153,8 +153,8 @@ namespace Platform
             return false;
         }
 
-        Debug::OutputString((char *)glGetString(GL_VENDOR));
-        Debug::OutputString((char *)glGetString(GL_VERSION));
+        Debug::Print((char *)glGetString(GL_VENDOR));
+        Debug::Print((char *)glGetString(GL_VERSION));
 
         return true;
         //--- END GET EXTENSION RENDER CONTEXT ---//
@@ -180,7 +180,7 @@ namespace Platform
     {
         if (!renderContext)
         {
-            Debug::OutputString("Tried to delete a render context with no current context.");
+            Debug::Print("Tried to delete a render context with no current context.");
 
             return false;
         }

@@ -20,7 +20,7 @@
 #include "utils.h"
 
 
-// NOTE (Emil): This brings in the OpenGL function declarations used in LoadFunctions (void).
+// NOTE (Emil): Brings in auto generated OpenGL function declarations.
 #include "FunctionDeclarations.inl"
 
 
@@ -30,6 +30,7 @@ namespace Capstan
 
     void LoadFunctions (void)
     {
+        // Asks the driver or OpenGL.dll for the functions declared in "FunctionDeclarations.inl"
         #include "LoadFunctions.inl"
     }
 
@@ -41,7 +42,7 @@ namespace Capstan
 
         if (code != GL_NO_ERROR)
         {
-            Debug::OutputString("OpenGL error: %d", code);
+            Debug::Print("OpenGL error: %d", code);
         }
     }
 
@@ -53,7 +54,7 @@ namespace Capstan
 
         GLint attributeCount;
         glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &attributeCount);
-        Debug::OutputString("Vertex Attributes: %d", attributeCount);
+        Debug::Print("Vertex Attributes: %d", attributeCount);
     }
 
 
@@ -84,10 +85,10 @@ namespace Capstan
 
         GLfloat vertices[] = {
             // Positions          // Colors           // Texture Coords
-            0.2f * 0.5f, 0.2f * 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
-            0.2f * 0.5f, 0.2f *-0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
-            0.2f *-0.5f, 0.2f *-0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
-            0.2f *-0.5f, 0.2f * 0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
+            1.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
+            1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
+            0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+            0.0f, 1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
         };
 
         GLuint indices[] = { 0, 1, 3, 1, 2, 3 };
@@ -154,11 +155,6 @@ namespace Capstan
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         glBindTexture(GL_TEXTURE_2D, 0);
-
-        Vector4f v = { 1.0f, 1.0f, 1.0f, 1.0f };
-        Matrix4f m = Translate(Vector3f(1.0f, 1.0f, 0.0f));
-
-        v = m * v;
     }
 
 
@@ -172,6 +168,17 @@ namespace Capstan
 
     void OpenGL::Render (void)
     {
+        static float x = 0.0f;
+        static float angle = 0.0f;
+        static Matrix4f m = Identity();
+
+        x += 0.002f;
+        angle += 0.002f;
+
+        m = TranslateX(x);
+
+        this->shader->SetUniform("transform", UniformType::Matrix4f, (void *)m.data);
+
         glClear(GL_COLOR_BUFFER_BIT);
 
         this->shader->Use();

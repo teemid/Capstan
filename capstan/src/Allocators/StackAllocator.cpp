@@ -25,7 +25,7 @@ namespace Capstan
 
         if (freeBytes < size)
         {
-            Debug::OutputString("StackAllocator out of memory");
+            Debug::Print("StackAllocator out of memory");
 
             assert(false);
         }
@@ -66,7 +66,7 @@ namespace Capstan
     {
         if (allocation.marker != this->marker)
         {
-            Debug::OutputString("StackAllocator cannot free memory that is not on the top of the stack.");
+            Debug::Print("StackAllocator cannot free memory that is not on the top of the stack.");
 
             assert(false);
         }

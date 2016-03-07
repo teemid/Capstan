@@ -10,13 +10,7 @@ namespace Debug
 {
     #ifdef CAPSTAN_DEBUG
 
-    void OutputString (char * formattedString, ...);
-
-    #define Print(string, ...) Capstan::Debug::OutputString(string, ##__VA_ARGS__);
-
-    #else
-
-    #define Print(string, ...)
+    void Print (char * formattedString, ...);
 
     #endif
 }
