@@ -5,6 +5,7 @@
 #include "Platform/Intrinsics.h"
 
 #include "Math/Matrix.h"
+#include "Math/Vector.h"
 
 
 namespace Capstan
@@ -51,7 +52,14 @@ namespace Capstan
     Matrix4f ScaleY (Real32 scaling);
     Matrix4f ScaleZ (Real32 scaling);
 
-    Matrix4f Share ();
+    namespace Projection
+    {
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 near, Real32 far);
+        Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar);
+    }
+
+    // TODO (Emil): Implement Share
+    // Matrix4f Share ();
 
     Matrix<Real32, 4>::Matrix (void)
     {
@@ -280,6 +288,7 @@ namespace Capstan
 
         return transform;
     }
+
     Matrix4f ScaleZ (Real32 scaling)
     {
         Matrix4f transform = Identity();
@@ -287,6 +296,33 @@ namespace Capstan
         transform[2].z = scaling;
 
         return transform;
+    }
+
+    namespace Projection
+    {
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar)
+        {
+            Matrix4f s = Scale(Vector3f(
+                2.0f / (right - left),
+                2.0f / (top - bottom),
+                0.0f / (zFar - zNear)
+            ));
+
+            Matrix4f t = Translate(Vector3f(
+                -((left + right) / 2.0f),
+                -((top + bottom) / 2.0f),
+                -((zFar + zNear) / 2.0f)
+            ));
+
+            t[2][2] = -1;
+
+            return  s * t;
+        }
+
+        Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar)
+        {
+            return Identity();
+        }
     }
 }
 

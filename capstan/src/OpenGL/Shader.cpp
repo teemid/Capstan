@@ -42,9 +42,17 @@ namespace Capstan
 
         switch (type)
         {
-            case UniformType::Matrix4f:
+            case UniformType::Matrix4fv:
             {
-                glUniformMatrix4fv(location, 1, GL_FALSE, (GLfloat *)uniform);
+                glUniformMatrix4fv(location, 1, GL_TRUE, (GLfloat *)uniform);
+            } break;
+            case UniformType::Float3fv:
+            {
+                glUniform3fv(location, 1, (GLfloat *)uniform);
+            } break;
+            case UniformType::Float4fv:
+            {
+                glUniform4fv(location, 1, (GLfloat *)uniform);
             } break;
             default:
             {
@@ -65,8 +73,8 @@ namespace Capstan
 
         if (!success)
         {
-            GLchar info[512];
-            glGetShaderInfoLog(shader, 512, NULL, info);
+            GLchar info[1024];
+            glGetShaderInfoLog(shader, 1024, NULL, info);
             Debug::Print("Shader failed to compile: %s", info);
             assert(success);
         }
@@ -83,8 +91,8 @@ namespace Capstan
 
         if (!success)
         {
-            GLchar info[512];
-            glGetProgramInfoLog(this->program, 512, NULL, info);
+            GLchar info[1024];
+            glGetProgramInfoLog(this->program, 1024, NULL, info);
             Debug::Print("Shader program failed to link: %s", info);
             assert(success);
         }

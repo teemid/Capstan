@@ -17,10 +17,9 @@ namespace Capstan
 
     enum class UniformType
     {
-        Matrix4f,
-        Vector4f,
-        Float,
-        Int32
+        Matrix4fv,
+        Float3fv,
+        Float4fv,
     };
 
     class Shader

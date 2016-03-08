@@ -69,6 +69,9 @@ namespace Capstan
     // TODO (Emil): Remove tutorial code.
     internal GLuint vertexArrayObject = 0;
     internal GLuint texture = 0;
+    internal Matrix4f model;
+    internal Matrix4f view;
+    internal Matrix4f projection;
 
     void OpenGL::StartUp (void)
     {
@@ -165,19 +168,15 @@ namespace Capstan
         delete this->shader;
     }
 
-
     void OpenGL::Render (void)
     {
-        static float x = 0.0f;
-        static float angle = 0.0f;
-        static Matrix4f m = Identity();
 
-        x += 0.002f;
-        angle += 0.002f;
+        Vector3f axis = (1.0f, 0.0f, 0.0f);
+        model = Translate(axis) * Rotate(Vector3f(-20.0f, -20.0f, -20.0f)) * Translate(-axis);
 
-        m = TranslateX(x);
-
-        this->shader->SetUniform("transform", UniformType::Matrix4f, (void *)m.data);
+        this->shader->SetUniform("model", UniformType::Matrix4fv, (void *)model.data);
+        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
+        this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
