@@ -16,6 +16,8 @@ GetFunction(PFNGLGETSHADERIVPROC,              glGetShaderiv);
 GetFunction(PFNGLGETSHADERINFOLOGPROC,         glGetShaderInfoLog);
 GetFunction(PFNGLGETUNIFORMLOCATIONPROC,       glGetUniformLocation);
 GetFunction(PFNGLUNIFORMMATRIX4FVPROC,         glUniformMatrix4fv);
+GetFunction(PFNGLUNIFORM3FVPROC,               glUniform3fv);
+GetFunction(PFNGLUNIFORM4FVPROC,               glUniform4fv);
 GetFunction(PFNGLCREATEPROGRAMPROC,            glCreateProgram);
 GetFunction(PFNGLDELETEPROGRAMPROC,            glDeleteProgram);
 GetFunction(PFNGLATTACHSHADERPROC,             glAttachShader);
