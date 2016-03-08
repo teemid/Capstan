@@ -7,6 +7,7 @@ The function signature of glUniformMatrix4fv is:
     glUniformMatrix4fv(GLint location, Glsizei count, GLboolean transpose, const GLfloat * value);
 
 Atleast for OpenGL ES transpose must always be GL_FALSE according to the docs (https://www.khronos.org/opengles/sdk/docs/man/xhtml/glUniform.xml).
+For OpenGL 3.3 transpose can be true, the technique below does not seem to work.
 
     layout(row_major) uniform;
 
