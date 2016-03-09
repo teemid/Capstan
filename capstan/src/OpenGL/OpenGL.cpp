@@ -88,10 +88,10 @@ namespace Capstan
 
         GLfloat vertices[] = {
             // Positions          // Colors           // Texture Coords
-            1.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
-            1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
-            0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
-            0.0f, 1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
+             0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
+             0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
         };
 
         GLuint indices[] = { 0, 1, 3, 1, 2, 3 };
@@ -158,6 +158,12 @@ namespace Capstan
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        view = Identity(); // Translate(Vector3f(0.0f, 0.0f, -3.0f));
+        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
+
+        projection = Projection::Orthographic(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+        this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
     }
 
 
@@ -170,13 +176,10 @@ namespace Capstan
 
     void OpenGL::Render (void)
     {
-
-        Vector3f axis = (1.0f, 0.0f, 0.0f);
-        model = Translate(axis) * Rotate(Vector3f(-20.0f, -20.0f, -20.0f)) * Translate(-axis);
+        static Real32 angle = 50.0f;
+        model = Identity(); // Rotate(model, angle, Vector3f(0.5f, 1.0f, 0.0f));
 
         this->shader->SetUniform("model", UniformType::Matrix4fv, (void *)model.data);
-        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
-        this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 

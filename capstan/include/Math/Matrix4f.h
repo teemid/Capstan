@@ -54,7 +54,7 @@ namespace Capstan
 
     namespace Projection
     {
-        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 near, Real32 far);
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar);
         Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar);
     }
 
@@ -179,6 +179,32 @@ namespace Capstan
         return result;
     }
 
+    // NOTE (Emil): Rotates theta degrees around the axis defined by the
+    // unit vector u.
+    Matrix4f Rotate(Matrix4f m, Real32 theta, Vector3f u)
+    {
+        Matrix4f result;
+
+        result[0][0] = Cos(theta) + u.x * u.x * (1 - Cos(theta));
+        result[0][1] = u.x * u.y * (1 - Cos(theta)) + u.z * Sin(theta);
+        result[0][2] = u.x * u.z * (1 - Cos(theta)) - u.y * Sin(theta);
+        result[0][3] = 0;
+
+        result[1][0] = u.x * u.y * (1 - Cos(theta)) - u.z * Sin(theta);
+        result[1][1] = Cos(theta) + u.y * u.y * (1 - Cos(theta));
+        result[1][2] = u.y * u.z * (1 - Cos(theta)) + u.x * Sin(theta);
+        result[1][3] = 0;
+
+        result[2][0] = u.z * u.x * (1 - Cos(theta)) + u.y * Sin(theta);
+        result[2][1] = u.z * u.y * (1 - Cos(theta)) - u.x * Sin(theta);
+        result[2][2] = Cos(theta) + u.z * u.z * (1 - Cos(theta));
+        result[2][3] = 0;
+
+        result[3] = Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+
+        return m * result;
+    }
+
     Matrix4f Rotate (Vector3f & radians)
     {
         Matrix4f transform;
@@ -300,12 +326,19 @@ namespace Capstan
 
     namespace Projection
     {
-        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar)
+        Matrix4f Orthographic (
+            Real32 left,
+            Real32 right,
+            Real32 bottom,
+            Real32 top,
+            Real32 zNear,
+            Real32 zFar
+        )
         {
             Matrix4f s = Scale(Vector3f(
                 2.0f / (right - left),
                 2.0f / (top - bottom),
-                0.0f / (zFar - zNear)
+                2.0f / (zFar - zNear)
             ));
 
             Matrix4f t = Translate(Vector3f(
