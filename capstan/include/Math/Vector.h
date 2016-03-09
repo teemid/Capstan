@@ -20,15 +20,27 @@ namespace Capstan
         Vector<T, N> operator *(const Vector<T, N> & rhs);
         Vector<T, N> operator /(const Vector<T, N> & rhs);
 
-        Vector<T, N> operator +(const T scalar);
-        Vector<T, N> operator -(const T scalar);
-        Vector<T, N> operator *(const T scalar);
-        Vector<T, N> operator /(const T scalar);
+        Vector<T, N> operator +(const T & scalar);
+        Vector<T, N> operator -(const T & scalar);
+        Vector<T, N> operator *(const T & scalar);
+        Vector<T, N> operator /(const T & scalar);
 
         T operator[](UInt32 index);
 
         Bool32 operator ==(const Vector<T, N> & rhs);
     };
+
+    typedef Vector<Real32, 2> Vector2f;
+    typedef Vector<Real32, 3> Vector3f;
+    typedef Vector<Real32, 4> Vector4f;
+
+    typedef Vector2f UVMap;
+    typedef Vector3f Color3f;
+    typedef Vector4f Color4f;
+
+    typedef Vector<Int32, 2> Vector2i;
+    typedef Vector<Int32, 3> Vector3i;
+    typedef Vector<Int32, 4> Vector4i;
 
     template<typename T, UInt32 N>
     Vector<T, N> Normalize (Vector<T, N> & v);
@@ -40,6 +52,9 @@ namespace Capstan
     T Length (Vector<T, N> & v);
 
     template<typename T, UInt32 N>
+    Vector<T, N> Cross (Vector<T, N> & v1, Vector<T, N> & v2);
+
+    template<typename T, UInt32 N>
     T Dot (Vector<T, N> & v1, Vector<T, N> & v2);
 
     template<typename T, UInt32 N>
@@ -47,14 +62,6 @@ namespace Capstan
 
     template <typename T, UInt32 N>
     Vector<T, N> Lerp (Vector<T, N> & start, Vector<T, N> & end, Real32 t);
-
-    typedef Vector<Real32, 2> Vector2f;
-    typedef Vector<Real32, 3> Vector3f;
-    typedef Vector<Real32, 4> Vector4f;
-
-    typedef Vector<Int32, 2> Vector2i;
-    typedef Vector<Int32, 3> Vector3i;
-    typedef Vector<Int32, 4> Vector4i;
 
     template<typename T, UInt32 N>
     Vector<T, N>::Vector (void)
@@ -147,7 +154,7 @@ namespace Capstan
     };
 
     template<typename T, UInt32 N>
-    Vector<T, N> Vector<T, N>::operator +(const T scalar)
+    Vector<T, N> Vector<T, N>::operator +(const T & scalar)
     {
         Vector<T, N> result;
         for (UInt32 i = 0; i < N; i++)
@@ -159,7 +166,7 @@ namespace Capstan
     }
 
     template<typename T, UInt32 N>
-    Vector<T, N> Vector<T, N>::operator -(const T scalar)
+    Vector<T, N> Vector<T, N>::operator -(const T & scalar)
     {
         Vector<T, N> result;
         for (UInt32 i = 0; i < N; i++)
@@ -171,7 +178,7 @@ namespace Capstan
     }
 
     template<typename T, UInt32 N>
-    Vector<T, N> Vector<T, N>::operator *(const T scalar)
+    Vector<T, N> Vector<T, N>::operator *(const T & scalar)
     {
         Vector<T, N> result;
         for (UInt32 i = 0; i < N; i++)
@@ -183,7 +190,7 @@ namespace Capstan
     }
 
     template<typename T, UInt32 N>
-    Vector<T, N> Vector<T, N>::operator /(const T scalar)
+    Vector<T, N> Vector<T, N>::operator /(const T & scalar)
     {
         Vector<T, N> result;
         for (UInt32 i = 0; i < N; i++)
@@ -195,21 +202,7 @@ namespace Capstan
     }
 
     template<typename T, UInt32 N>
-    Vector<T, N> Normalize (Vector<T, N> & v)
-    {
-        Vector<T, N> normalized;
-        auto len = Length(v);
-
-        for (UInt32 i = 0; i < N; i++)
-        {
-            normalized.data[i] = data[i] / len;
-        }
-
-        return normalized;
-    }
-
-    template<typename T, UInt32 N>
-    T LengthSquared (Vector<T, N> & v)
+    inline T LengthSquared (Vector<T, N> & v)
     {
         T squaredSum;
 
@@ -222,7 +215,7 @@ namespace Capstan
     };
 
     template<typename T, UInt32 N>
-    T Length (Vector<T, N> & v)
+    inline T Length (Vector<T, N> & v)
     {
         T squaredSum;
 
@@ -235,7 +228,15 @@ namespace Capstan
     };
 
     template<typename T, UInt32 N>
-    T Dot (Vector<T, N> & v1, Vector<T, N> & v2)
+    inline Vector<T, N> Normalize (Vector<T, N> & v)
+    {
+        return v / Length(v);
+    }
+
+
+
+    template<typename T, UInt32 N>
+    inline T Dot (Vector<T, N> & v1, Vector<T, N> & v2)
     {
         T dot;
 
@@ -248,7 +249,7 @@ namespace Capstan
     };
 
     template<typename T, UInt32 N>
-    Real32 Angle (Vector<T, N> & v1, Vector<T, N> & v2)
+    inline Real32 Angle (Vector<T, N> & v1, Vector<T, N> & v2)
     {
         T dot = Dot(v1, v2);
 
@@ -256,7 +257,7 @@ namespace Capstan
     };
 
     template <typename T, UInt32 N>
-    Vector<T, N> Lerp (Vector<T, N> & start, Vector<T, N> & end, Real32 t)
+    inline Vector<T, N> Lerp (Vector<T, N> & start, Vector<T, N> & end, Real32 t)
     {
         Vector<T, N> result;
 

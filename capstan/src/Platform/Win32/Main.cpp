@@ -1,4 +1,5 @@
 #include <stdio.h>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <Wingdi.h>
 
@@ -53,7 +54,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
 
     if (!RegisterClassEx(&wnd))
     {
-        Capstan::Debug::OutputString("Could not register Window Class.");
+        Capstan::Debug::Print("Could not register Window Class.");
 
         return 1;
     }
@@ -73,7 +74,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
 
     if (!windowHandle)
     {
-        Capstan::Debug::OutputString("Could not create window.");
+        Capstan::Debug::Print("Could not create window.");
 
         return 1;
     }
@@ -82,13 +83,13 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     SYSTEM_LOGICAL_PROCESSOR_INFORMATION cpuInfo;
     BOOL result = GetLogicalProcessorInformation(&cpuInfo, &cpuInfoLength);
 
-    Capstan::Debug::OutputString("Cache Line Length: %d", cpuInfo.Cache.LineSize);
+    Capstan::Debug::Print("Cache Line Length: %d", cpuInfo.Cache.LineSize);
 
 #ifdef CAPSTAN_CONSOLE
     BOOL console = AllocConsole();
     if (!console)
     {
-        OutputDebugString("Could not create console.");
+        Capstan::Debug::Print("Failed to create a console.");
     }
     else
     {
@@ -122,7 +123,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
         QueryPerformanceCounter(&current);
         elapsed.QuadPart = (current.QuadPart - previous.QuadPart);
         delta = (double)(elapsed.QuadPart * interval); // milliseconds
-        // DebugPrint("%f\n", delta);
+
         previous = current;
 
         MSG message;

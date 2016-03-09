@@ -5,6 +5,7 @@
 #include "Platform/Intrinsics.h"
 
 #include "Math/Matrix.h"
+#include "Math/Vector.h"
 
 
 namespace Capstan
@@ -34,6 +35,8 @@ namespace Capstan
 
     Matrix4f Identity (void);
 
+    Matrix4f Transpose (Matrix4f * matrix);
+
     Matrix4f Rotate (Vector3f & radians);
     Matrix4f RotateX (Real32 radians);
     Matrix4f RotateY (Real32 radians);
@@ -49,7 +52,14 @@ namespace Capstan
     Matrix4f ScaleY (Real32 scaling);
     Matrix4f ScaleZ (Real32 scaling);
 
-    Matrix4f Share ();
+    namespace Projection
+    {
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 near, Real32 far);
+        Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar);
+    }
+
+    // TODO (Emil): Implement Share
+    // Matrix4f Share ();
 
     Matrix<Real32, 4>::Matrix (void)
     {
@@ -105,20 +115,19 @@ namespace Capstan
         return result;
     }
 
+    // TODO (Emil): Optimize matrix multiplication, possibly with intrinsics.
     Matrix4f Matrix<Real32, 4>::operator *(const Matrix4f & rhs)
     {
         Matrix4f result = {};
 
-        for (Int32 row = 0; row < 4; ++row)
+        for (UInt32 i = 0; i < 4; ++i)
         {
-            for (Int32 column = 0; column < 4; ++column)
+            for (UInt32 j = 0; j < 4; ++j)
             {
-                result.data[column + row * 4] = (
-                    data[column * 4 + 0] * rhs.data[column +  0] +
-                    data[column * 4 + 1] * rhs.data[column +  4] +
-                    data[column * 4 + 2] * rhs.data[column +  8] +
-                    data[column * 4 + 3] * rhs.data[column + 12]
-                );
+                for (UInt32 k = 0; k < 4; ++k)
+                {
+                    result[i][j] += rows[i][k] * rhs.data[k * 4 + j];
+                }
             }
         }
 
@@ -146,12 +155,28 @@ namespace Capstan
     {
         Matrix4f identity;
 
-        identity[0][0] = 1;
-        identity[1][1] = 1;
-        identity[2][2] = 1;
-        identity[3][3] = 1;
+        identity[0].x = 1;
+        identity[1].y = 1;
+        identity[2].z = 1;
+        identity[3].w = 1;
 
         return identity;
+    }
+
+
+    Matrix4f Transpose (Matrix4f * matrix)
+    {
+        Matrix4f result;
+
+        for (UInt32 r = 0; r < 4; ++r)
+        {
+            for (UInt32 c = 0; c < 4; ++c)
+            {
+                result[c][r] = (*matrix)[r][c];
+            }
+        }
+
+        return result;
     }
 
     Matrix4f Rotate (Vector3f & radians)
@@ -165,10 +190,10 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[1][1] =  Cos(radians);
-        transform[1][2] = -Sin(radians);
-        transform[2][1] =  Sin(radians);
-        transform[2][2] =  Cos(radians);
+        transform[1].y =  Cos(radians);
+        transform[1].z = -Sin(radians);
+        transform[2].y =  Sin(radians);
+        transform[2].z =  Cos(radians);
 
         return transform;
     }
@@ -177,10 +202,10 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][0] =  Cos(radians);
-        transform[0][3] =  Sin(radians);
-        transform[2][0] = -Sin(radians);
-        transform[2][2] =  Cos(radians);
+        transform[0].x =  Cos(radians);
+        transform[0].z =  Sin(radians);
+        transform[2].x = -Sin(radians);
+        transform[2].z =  Cos(radians);
 
         return transform;
     }
@@ -189,10 +214,10 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][0] =  Cos(radians);
-        transform[0][1] = -Sin(radians);
-        transform[1][0] =  Sin(radians);
-        transform[1][1] =  Cos(radians);
+        transform[0].x =  Cos(radians);
+        transform[0].y = -Sin(radians);
+        transform[1].x =  Sin(radians);
+        transform[1].y =  Cos(radians);
 
         return transform;
     }
@@ -201,9 +226,9 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][3] = translation.x;
-        transform[1][3] = translation.y;
-        transform[2][3] = translation.z;
+        transform[0].w = translation.x;
+        transform[1].w = translation.y;
+        transform[2].w = translation.z;
 
         return transform;
     }
@@ -212,7 +237,7 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][3] = x;
+        transform[0].w = x;
 
         return transform;
     }
@@ -221,7 +246,7 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[1][3] = y;
+        transform[1].w = y;
 
         return transform;
     }
@@ -230,7 +255,7 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[2][3] = z;
+        transform[2].w = z;
 
         return transform;
     }
@@ -239,9 +264,9 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][0] = scaling.x;
-        transform[1][1] = scaling.y;
-        transform[2][2] = scaling.z;
+        transform[0].x = scaling.x;
+        transform[1].y = scaling.y;
+        transform[2].z = scaling.z;
 
         return transform;
     }
@@ -250,7 +275,7 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[0][0] = scaling;
+        transform[0].x = scaling;
 
         return transform;
     }
@@ -259,17 +284,45 @@ namespace Capstan
     {
         Matrix4f transform = Identity();
 
-        transform[1][1] = scaling;
+        transform[1].y = scaling;
 
         return transform;
     }
+
     Matrix4f ScaleZ (Real32 scaling)
     {
         Matrix4f transform = Identity();
 
-        transform[2][2] = scaling;
+        transform[2].z = scaling;
 
         return transform;
+    }
+
+    namespace Projection
+    {
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar)
+        {
+            Matrix4f s = Scale(Vector3f(
+                2.0f / (right - left),
+                2.0f / (top - bottom),
+                0.0f / (zFar - zNear)
+            ));
+
+            Matrix4f t = Translate(Vector3f(
+                -((left + right) / 2.0f),
+                -((top + bottom) / 2.0f),
+                -((zFar + zNear) / 2.0f)
+            ));
+
+            t[2][2] = -1;
+
+            return  s * t;
+        }
+
+        Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar)
+        {
+            return Identity();
+        }
     }
 }
 
