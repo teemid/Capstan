@@ -87,11 +87,11 @@ namespace Capstan
         // This code should not be here after this is more fleshed out.
 
         GLfloat vertices[] = {
-            // Positions          // Colors           // Texture Coords
-            1.0f, 1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
-            1.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
-            0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
-            0.0f, 1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left
+            // Positions        // Texture Coords
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,   // Top Right
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,   // Bottom Right
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,   // Bottom Left
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f    // Top Left
         };
 
         GLuint indices[] = { 0, 1, 3, 1, 2, 3 };
@@ -116,32 +116,22 @@ namespace Capstan
             3, // components per vertex attrib
             GL_FLOAT, // component type
             GL_FALSE, // normalized data?
-            8 * sizeof(GLfloat), // stride, 0 is also accepted when the data is tightly packed.
+            5 * sizeof(GLfloat), // stride, 0 is also accepted when the data is tightly packed.
             (GLvoid*)0 // offset to start of data, in this case 0
         );
         glEnableVertexAttribArray(0);
 
         glVertexAttribPointer(
-            1,
-            3,
-            GL_FLOAT,
-            GL_FALSE,
-            8 * sizeof(GLfloat),
-            (GLvoid*)(3 * sizeof(GLfloat))
-        );
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(
-            2, // atrib index
+            2, // attrib index
             2,
             GL_FLOAT,
             GL_FALSE,
-            8 * sizeof(GLfloat),
-            (GLvoid *)(6 * sizeof(GLfloat))
+            5 * sizeof(GLfloat),
+            (GLvoid *)(3 * sizeof(GLfloat))
         );
         glEnableVertexAttribArray(2);
 
-        glBindVertexArray(0);  // NOTE (Emil): Unbind the VAO
+        glBindVertexArray(0);  // Unbind the VAO
 
         AssetManager * gAssetManager = (AssetManager *)System::Get(System::Type::Asset);
 
@@ -157,7 +147,15 @@ namespace Capstan
         ImageAsset image = gAssetManager->LoadTexture("images/heart.bmp");
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
+        // glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
+
+
+        view = Translate(Vector3f(0.0f, 0.0f, 0.0f));
+        // projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+
+        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
+        this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
     }
 
 
@@ -170,21 +168,28 @@ namespace Capstan
 
     void OpenGL::Render (void)
     {
+        static Real32 angle = 0.0f;
+        // static Vector3f translation = Vector3f(0.0f, 0.0f, 0.0f);
 
-        Vector3f axis = (1.0f, 0.0f, 0.0f);
-        model = Translate(axis) * Rotate(Vector3f(-20.0f, -20.0f, -20.0f)) * Translate(-axis);
+        angle += 0.0002f;
+        // translation.z += 0.0000001f;
+
+        model = Rotate(angle, Vector3f(1.0f, 0.0f, 0.0f));
+        // view = Translate(translation);
 
         this->shader->SetUniform("model", UniformType::Matrix4fv, (void *)model.data);
-        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
-        this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
+        // this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         this->shader->Use();
 
         glBindTexture(GL_TEXTURE_2D, texture);
+
         glBindVertexArray(vertexArrayObject);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
         glBindVertexArray(0);
 
         Platform::SwapBuffers();

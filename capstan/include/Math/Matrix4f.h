@@ -4,6 +4,7 @@
 #include "Platform/Memory.h"
 #include "Platform/Intrinsics.h"
 
+#include "Math/Constants.h"
 #include "Math/Matrix.h"
 #include "Math/Vector.h"
 
@@ -28,16 +29,19 @@ namespace Capstan
 
         Vector4f operator *(const Vector4f & columnVector);
 
+        Vector4f operator [](UInt32 row) const;
         Vector4f & operator [](UInt32 row);
 
-        Matrix4f operator ==(const Matrix4f & rhs);
+        Matrix4f & operator =(const Matrix4f & rhs);
+        Bool32 operator ==(const Matrix4f & rhs);
     };
 
     Matrix4f Identity (void);
 
     Matrix4f Transpose (Matrix4f * matrix);
 
-    Matrix4f Rotate (Vector3f & radians);
+    Matrix4f Rotate (Matrix4f & m, Real32 angle, Vector3f axis);
+    Matrix4f Rotate (Real32 angle, Vector3f axis);
     Matrix4f RotateX (Real32 radians);
     Matrix4f RotateY (Real32 radians);
     Matrix4f RotateZ (Real32 radians);
@@ -54,19 +58,22 @@ namespace Capstan
 
     namespace Projection
     {
-        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 near, Real32 far);
+        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar);
         Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar);
     }
 
     // TODO (Emil): Implement Share
     // Matrix4f Share ();
 
-    Matrix<Real32, 4>::Matrix (void)
+    Matrix4f::Matrix (void)
     {
-        Memory::Zero((void *)data, sizeof(Real32) * 16);
+        rows[0][0] = 1;
+        rows[1][1] = 1;
+        rows[2][2] = 1;
+        rows[3][3] = 1;
     };
 
-    Matrix<Real32, 4>::Matrix (Vector4f & v)
+    Matrix4f::Matrix (Vector4f & v)
     {
         rows[0] = v;
         rows[1] = v;
@@ -74,41 +81,40 @@ namespace Capstan
         rows[3] = v;
     };
 
-    Vector4f & Matrix<Real32, 4>::operator [](UInt32 row)
+    Vector4f Matrix4f::operator [](UInt32 row) const
     {
         return rows[row];
     }
 
-    Matrix4f Matrix<Real32, 4>::operator +(const Matrix4f & rhs)
+    Vector4f & Matrix4f::operator [](UInt32 row)
+    {
+        return rows[row];
+    }
+
+    Matrix4f Matrix4f::operator +(const Matrix4f & rhs)
     {
         Matrix4f result = {};
-        Int32 i;
 
         for (Int32 row = 0; row < 4; ++row)
         {
             for (Int32 column = 0; column < 4; ++column)
             {
-                i = column * 4 + row;
-
-                result.data[i] = data[i] + rhs.data[i];
+                result[row][column] = rows[row][column] + rhs[row][column];
             }
         }
 
         return result;
     }
 
-    Matrix4f Matrix<Real32, 4>::operator -(const Matrix4f & rhs)
+    Matrix4f Matrix4f::operator -(const Matrix4f & rhs)
     {
         Matrix4f result = {};
-        Int32 i;
 
         for (Int32 row = 0; row < 4; ++row)
         {
             for (Int32 column = 0; column < 4; ++column)
             {
-                i = column * 4 + row;
-
-                result.data[i] = data[i] - rhs.data[i];
+                result[row][column] = rows[row][column] - rhs[row][column];
             }
         }
 
@@ -116,7 +122,7 @@ namespace Capstan
     }
 
     // TODO (Emil): Optimize matrix multiplication, possibly with intrinsics.
-    Matrix4f Matrix<Real32, 4>::operator *(const Matrix4f & rhs)
+    Matrix4f Matrix4f::operator *(const Matrix4f & rhs)
     {
         Matrix4f result = {};
 
@@ -126,7 +132,7 @@ namespace Capstan
             {
                 for (UInt32 k = 0; k < 4; ++k)
                 {
-                    result[i][j] += rows[i][k] * rhs.data[k * 4 + j];
+                    result[i][j] += rows[i][k] * rhs[k][j];
                 }
             }
         }
@@ -134,21 +140,47 @@ namespace Capstan
         return result;
     }
 
-    Vector4f Matrix<Real32, 4>::operator *(const Vector4f & columnVector)
+    Vector4f Matrix4f::operator *(const Vector4f & columnVector)
     {
         Vector4f result;
 
         for (UInt32 i = 0; i < 4; ++i)
         {
-            Real32 x = data[i * 4 + 0] * columnVector.x;
-            Real32 y = data[i * 4 + 1] * columnVector.y;
-            Real32 z = data[i * 4 + 2] * columnVector.z;
-            Real32 w = data[i * 4 + 3] * columnVector.w;
+            Real32 x = rows[i][0] * columnVector.x;
+            Real32 y = rows[i][1] * columnVector.y;
+            Real32 z = rows[i][2] * columnVector.z;
+            Real32 w = rows[i][3] * columnVector.w;
 
             result[i] = x + y + z + w;
         }
 
         return result;
+    }
+
+    Matrix4f & Matrix4f::operator =(const Matrix4f & m)
+    {
+        rows[0] = m[0];
+        rows[1] = m[1];
+        rows[2] = m[2];
+        rows[3] = m[3];
+
+        return *this;
+    }
+
+    Bool32 Matrix4f::operator ==(const Matrix4f & rhs)
+    {
+        for (UInt32 row = 0; row < 4; ++row)
+        {
+            for (UInt32 column = 0; column < 4; ++column)
+            {
+                if (rows[row][column] != rhs[row][column])
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     Matrix4f Identity (void)
@@ -179,12 +211,41 @@ namespace Capstan
         return result;
     }
 
-    Matrix4f Rotate (Vector3f & radians)
-    {
-        Matrix4f transform;
 
-        return transform;
+    Matrix4f Rotate (Real32 theta, Vector3f axis)
+    {
+        Matrix4f result;
+
+        result[0][0] = Cos(theta) + axis.x * axis.x * (1 - Cos(theta));
+        result[0][1] = axis.x * axis.y * (1 - Cos(theta)) - axis.z * Sin(theta);
+        result[0][2] = axis.x * axis.z * (1 - Cos(theta)) + axis.y * Sin(theta);
+        result[0][3] = 0;
+
+        result[1][0] = axis.x * axis.y * (1 - Cos(theta)) + axis.z * Sin(theta);
+        result[1][1] = Cos(theta) + axis.y * axis.y * (1 - Cos(theta));
+        result[1][2] = axis.y * axis.z * (1 - Cos(theta)) - axis.x * Sin(theta);
+        result[1][3] = 0;
+
+        result[2][0] = axis.z * axis.x * (1 - Cos(theta)) - axis.y * Sin(theta);
+        result[2][1] = axis.z * axis.y * (1 - Cos(theta)) + axis.x * Sin(theta);
+        result[2][2] = Cos(theta) + axis.z * axis.z * (1 - Cos(theta));
+        result[2][3] = 0;
+
+        result[3] = Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+
+        return result;
     }
+
+
+    // NOTE (Emil): Rotates theta degrees around the axis defined by the
+    // unit vector axis.
+    Matrix4f Rotate(Matrix4f & m, Real32 theta, Vector3f axis)
+    {
+        Matrix4f result = Rotate(theta, axis);
+
+        return m * result;
+    }
+
 
     Matrix4f RotateX (Real32 radians)
     {
@@ -300,12 +361,19 @@ namespace Capstan
 
     namespace Projection
     {
-        Matrix4f Orthographic (Real32 left, Real32 right, Real32 bottom, Real32 top, Real32 zNear, Real32 zFar)
+        Matrix4f Orthographic (
+            Real32 left,
+            Real32 right,
+            Real32 bottom,
+            Real32 top,
+            Real32 zNear,
+            Real32 zFar
+        )
         {
             Matrix4f s = Scale(Vector3f(
                 2.0f / (right - left),
                 2.0f / (top - bottom),
-                0.0f / (zFar - zNear)
+                2.0f / (zFar - zNear)
             ));
 
             Matrix4f t = Translate(Vector3f(
@@ -321,7 +389,20 @@ namespace Capstan
 
         Matrix4f Perspective (Real32 fov, Real32 aspect, Real32 zNear, Real32 zFar)
         {
-            return Identity();
+            Matrix4f projection = Identity();
+
+            Real32 s = 1 / (Tan((fov / 2) * (PI / 180)));
+
+            projection[0][0] = s;
+
+            projection[1][1] = s;
+
+            projection[2][2] = -zFar / (zFar - zNear);
+            projection[2][3] = -1;
+
+            projection[3][2] = -(zFar * zNear) / (zFar - zNear);
+
+            return projection;
         }
     }
 }
