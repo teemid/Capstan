@@ -1,5 +1,5 @@
 #include "OpenGL/OpenGL.h"
-
+#include "OpenGL/Camera.h"
 
 #include "Platform/Assert.h"
 #include "Platform/Debug.h"
@@ -13,11 +13,11 @@
 #include "AssetManager.h"
 #include "strings.h"
 #include "SystemManager.h"
+#include "utils.h"
 
 #include "Math/Matrix4f.h"
+#include "Math/Vector3f.h"
 #include "Math/Vector4f.h"
-
-#include "utils.h"
 
 
 // NOTE (Emil): Brings in auto generated OpenGL function declarations.
@@ -152,7 +152,7 @@ namespace Capstan
 
 
         view = Translate(Vector3f(0.0f, 0.0f, 0.0f));
-        // projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 
         this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
         this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
@@ -169,16 +169,16 @@ namespace Capstan
     void OpenGL::Render (void)
     {
         static Real32 angle = 0.0f;
-        // static Vector3f translation = Vector3f(0.0f, 0.0f, 0.0f);
+        static Vector3f translation = Vector3f(0.0f, 0.0f, 0.0f);
 
         angle += 0.0002f;
-        // translation.z += 0.0000001f;
+        translation.z -= 0.00001f;
 
         model = Rotate(angle, Vector3f(1.0f, 0.0f, 0.0f));
-        // view = Translate(translation);
+        view = Translate(translation);
 
         this->shader->SetUniform("model", UniformType::Matrix4fv, (void *)model.data);
-        // this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
+        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 

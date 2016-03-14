@@ -7,6 +7,8 @@
 
 #include <math.h>
 
+#include "Platform/Types.h"
+
 namespace Capstan
 {
     inline Real32 Sin (Real32 angle)
