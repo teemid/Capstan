@@ -4,7 +4,6 @@
 #include "Platform/Memory.h"
 #include "Platform/Intrinsics.h"
 
-// NOTE (Emil): This file is included at the bottom of Vector.h.
 
 namespace Capstan
 {
@@ -21,18 +20,18 @@ namespace Capstan
         Vector4f (Real32 x, Real32 y, Real32 z);
         Vector4f (Real32 x, Real32 y, Real32 z, Real32 w);
 
-        Vector4f operator +(const Vector4f & rhs);
-        Vector4f operator -(const Vector4f & rhs);
-        Vector4f operator *(const Vector4f & rhs);
+        inline Vector4f operator +(const Vector4f & rhs);
+        inline Vector4f operator -(const Vector4f & rhs);
+        inline Vector4f operator *(const Vector4f & rhs);
 
-        Vector4f operator +(const Real32 & scalar);
-        Vector4f operator -(const Real32 & scalar);
-        Vector4f operator *(const Real32 & scalar);
-        Vector4f operator /(const Real32 & scalar);
+        inline Vector4f operator +(const Real32 & scalar);
+        inline Vector4f operator -(const Real32 & scalar);
+        inline Vector4f operator *(const Real32 & scalar);
+        inline Vector4f operator /(const Real32 & scalar);
 
-        Vector4f operator -(void);
-        Real32 & operator [](UInt32 index);
-        Bool32 operator ==(const Vector4f & rhs);
+        inline Vector4f operator -(void);
+        inline Real32 & operator [](UInt32 index);
+        inline Bool32 operator ==(const Vector4f & rhs);
     };
 
     inline Real32 LengthSquared (Vector4f & v);
@@ -44,55 +43,47 @@ namespace Capstan
     inline Real32 Dot (Vector4f & v1, Vector4f & v2);
 
     //==== Implementation begin ====//
-    Vector4f::Vector4f (void) { }
-
-    Vector4f::Vector4f (Real32 x) : x(x), y(x), z(x), w(x) { }
-
-    Vector4f::Vector4f (Real32 x, Real32 y, Real32 z) : x(x), y(y), z(z) { }
-
-    Vector4f::Vector4f (Real32 x, Real32 y, Real32 z, Real32 w) : x(x), y(y), z(z), w(w) { };
-
-    Vector4f Vector4f::operator -(void)
+    inline Vector4f Vector4f::operator -(void)
     {
         return Vector4f(-x, -y, -z, -w);
     }
 
-    Real32 & Vector4f::operator [] (UInt32 index)
+    inline Real32 & Vector4f::operator [] (UInt32 index)
     {
         return data[index];
     }
 
-    Vector4f Vector4f::operator +(const Vector4f & rhs)
+    inline Vector4f Vector4f::operator +(const Vector4f & rhs)
     {
         return Vector4f(x + rhs.x, y + rhs.y, z + rhs.z, w + rhs.w);
     }
 
-    Vector4f Vector4f::operator -(const Vector4f & rhs)
+    inline Vector4f Vector4f::operator -(const Vector4f & rhs)
     {
         return Vector4f(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
     }
 
-    Vector4f Vector4f::operator *(const Vector4f & rhs)
+    inline Vector4f Vector4f::operator *(const Vector4f & rhs)
     {
         return Vector4f(x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w);
     }
 
-    Vector4f Vector4f::operator +(const Real32 & scalar)
+    inline Vector4f Vector4f::operator +(const Real32 & scalar)
     {
         return Vector4f(x + scalar, y + scalar, z + scalar, w + scalar);
     }
 
-    Vector4f Vector4f::operator -(const Real32 & scalar)
+    inline Vector4f Vector4f::operator -(const Real32 & scalar)
     {
         return Vector4f(x - scalar, y - scalar, z - scalar, w - scalar);
     }
 
-    Vector4f Vector4f::operator *(const Real32 & scalar)
+    inline Vector4f Vector4f::operator *(const Real32 & scalar)
     {
         return Vector4f(x * scalar, y * scalar, z * scalar, w * scalar);
     }
 
-    Vector4f Vector4f::operator /(const Real32 & scalar)
+    inline Vector4f Vector4f::operator /(const Real32 & scalar)
     {
         return Vector4f(x / scalar, y / scalar, z / scalar, w / scalar);
     }

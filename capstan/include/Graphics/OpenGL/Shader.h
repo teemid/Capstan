@@ -1,13 +1,15 @@
-#ifndef CAPSTAN_OPENGL_SHADER_H
-#define CAPSTAN_OPENGL_SHADER_H
+#ifndef CAPSTAN_GRAPHICS_OPENGL_SHADER_H
+#define CAPSTAN_GRAPHICS_OPENGL_SHADER_H
 
+
+#include "Graphics/OpenGL/gl.h"
 
 #include "Platform/Types.h"
 
-#include "OpenGL/gl.h"
-
 
 namespace Capstan
+{
+namespace Graphics
 {
     enum class ShaderStage
     {
@@ -38,6 +40,7 @@ namespace Capstan
 
         GLuint program;
     };
+}
 }
 
 

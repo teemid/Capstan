@@ -22,19 +22,19 @@ namespace Capstan
         Quaternion (void);
         Quaternion (Real32 i, Real32 j, Real32 k);
 
-        Vector<T, N> operator +(const Vector<T, N> & rhs);
-        Vector<T, N> operator -(const Vector<T, N> & rhs);
-        Vector<T, N> operator *(const Vector<T, N> & rhs);
-        Vector<T, N> operator /(const Vector<T, N> & rhs);
+        Quaternion operator +(const Quaternion & rhs);
+        Quaternion operator -(const Quaternion & rhs);
+        Quaternion operator *(const Quaternion & rhs);
+        Quaternion operator /(const Quaternion & rhs);
 
-        Vector<T, N> operator +(const T scalar);
-        Vector<T, N> operator -(const T scalar);
-        Vector<T, N> operator *(const T scalar);
-        Vector<T, N> operator /(const T scalar);
+        Quaternion operator +(const T scalar);
+        Quaternion operator -(const T scalar);
+        Quaternion operator *(const T scalar);
+        Quaternion operator /(const T scalar);
 
         T operator[](UInt32 index);
 
-        Bool32 operator ==(const Vector<T, N> & rhs);
+        Bool32 operator ==(const Quaternion & rhs);
     };
 }
 

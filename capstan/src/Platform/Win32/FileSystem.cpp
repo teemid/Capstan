@@ -5,8 +5,7 @@
 #include "Platform/FileSystem.h"
 #include "Platform/Win32/Debug.h"
 
-#include "MemoryManager.h"
-#include "SystemManager.h"
+#include "Globals.h"
 #include "utils.h"
 
 
@@ -28,16 +27,12 @@ namespace Capstan
 
     void FileSystem::StartUp (void)
     {
-        MemoryManager * gMemoryManager = (MemoryManager *)System::Get(System::Type::Memory);
-
-        FileSystem::fileList = (PlatformFileData *)gMemoryManager->Allocate(sizeof(PlatformFileData) * FileSystem::maxAsyncReads);
+        FileSystem::fileList = (PlatformFileData *)gMemoryManager.Allocate(sizeof(PlatformFileData) * FileSystem::maxAsyncReads);
     }
 
     void FileSystem::ShutDown (void)
     {
-        MemoryManager * gMemoryManager = (MemoryManager *)System::Get(System::Type::Memory);
-
-        gMemoryManager->Free((void *)FileSystem::fileList);
+        gMemoryManager.Free((void *)FileSystem::fileList);
     }
 
     internal DWORD inline GetAccessRights (Int32 mode)
@@ -167,17 +162,17 @@ namespace Capstan
 
     Bool32 FileSystem::Write (File * file, void * data, size_t numberOfBytes)
     {
-        return true;
+        return false;
     }
 
     Bool32 FileSystem::Delete (char * filename)
     {
-        return true;
+        return false;
     }
 
     Bool32 FileSystem::Seek (File * file, Int64 position)
     {
-        return true;
+        return false;
     }
 
     Bool32 FileSystem::Close (File * file)

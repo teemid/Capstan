@@ -10,7 +10,7 @@
 
 #include "AssetManager.h"
 #include "InputManager.h"
-#include "RenderManager.h"
+#include "Graphics/RenderManager.h"
 #include "MemoryManager.h"
 #include "Timer.h"
 
@@ -23,12 +23,12 @@
 
 Bool32        gRunning;
 
-Capstan::AssetManager  gAssetManager;
-Capstan::FileSystem    gFileSystem;
-Capstan::InputManager  gInputManager;
-Capstan::MemoryManager gMemoryManager;
-Capstan::RenderManager gRenderManager;
-Capstan::Timer         gTimer;
+Capstan::AssetManager            gAssetManager;
+Capstan::FileSystem              gFileSystem;
+Capstan::InputManager            gInputManager;
+Capstan::MemoryManager           gMemoryManager;
+Capstan::Graphics::RenderManager gRenderManager;
+Capstan::Timer                   gTimer;
 
 
 LRESULT CALLBACK Win32WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)

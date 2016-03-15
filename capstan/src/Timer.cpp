@@ -15,7 +15,7 @@ namespace Capstan
 
         previous = current;
 
-        current = Platform::GetCurrentTime();
+        current = Platform::GetTime();
 
         delta = current - previous;
     };

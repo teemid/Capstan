@@ -10,7 +10,7 @@ namespace Capstan
 namespace Platform
 {
     Real64 GetPeriod (void);
-    Real64 GetCurrentTime (void);
+    Real64 GetTime (void);
 }
 }
 

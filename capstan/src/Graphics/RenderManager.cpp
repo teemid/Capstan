@@ -1,8 +1,10 @@
-#include "RenderManager.h"
-#include "OpenGL/OpenGL.h"
+#include "Graphics/RenderManager.h"
+#include "Graphics/OpenGL/OpenGL.h"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     RenderManager::RenderManager (void) { };
     RenderManager::~RenderManager (void) { };
@@ -23,4 +25,5 @@ namespace Capstan
     {
         renderer->Render();
     }
+}
 }

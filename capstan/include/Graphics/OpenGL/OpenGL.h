@@ -1,13 +1,13 @@
-#ifndef CAPSTAN_OPENGL_H
-#define CAPSTAN_OPENGL_H
+#ifndef CAPSTAN_GRAPHICS_OPENGL_H
+#define CAPSTAN_GRAPHICS_OPENGL_H
 
-#include "OpenGL/gl.h"
-#include "OpenGL/Shader.h"
-
-#include "Renderer.h"
-
+#include "Graphics/OpenGL/gl.h"
+#include "Graphics/OpenGL/Shader.h"
+#include "Graphics/Renderer.h"
 
 namespace Capstan
+{
+namespace Graphics
 {
     class OpenGL : public Capstan::Renderer
     {
@@ -23,6 +23,6 @@ namespace Capstan
         Shader * shader;
     };
 }
-
+}
 
 #endif

@@ -19,39 +19,28 @@ namespace Capstan
         Vector2f (Real32 x);
         Vector2f (Real32 x, Real32 y);
 
-        Vector2f operator +(const Vector2f & rhs);
-        Vector2f operator -(const Vector2f & rhs);
-        Vector2f operator *(const Vector2f & rhs);
-        Vector2f operator /(const Vector2f & rhs);
+        inline Vector2f operator +(const Vector2f & rhs);
+        inline Vector2f operator -(const Vector2f & rhs);
+        inline Vector2f operator *(const Vector2f & rhs);
+        inline Vector2f operator /(const Vector2f & rhs);
 
-        Vector2f operator +(const Real32 & scalar);
-        Vector2f operator -(const Real32 & scalar);
-        Vector2f operator *(const Real32 & scalar);
-        Vector2f operator /(const Real32 & scalar);
+        inline Vector2f operator +(const Real32 & scalar);
+        inline Vector2f operator -(const Real32 & scalar);
+        inline Vector2f operator *(const Real32 & scalar);
+        inline Vector2f operator /(const Real32 & scalar);
 
-        Bool32 operator ==(const Vector2f & rhs);
+        inline Bool32 operator ==(const Vector2f & rhs);
     };
 
-    inline Vector2f Normalize (Vector2f & v);
-
-    inline Real32 LengthSquared (Vector2f & v);
-
-    inline Real32 Length (Vector2f & v);
-
-    inline Real32 Dot (Vector2f & v1, Vector2f & v2);
-
-    inline Real32 Angle (Vector2f & v1, Vector2f & v2);
-
-    inline Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t);
+    inline Vector2f Normalize     (Vector2f & v);
+    inline Real32   LengthSquared (Vector2f & v);
+    inline Real32   Length        (Vector2f & v);
+    inline Real32   Dot           (Vector2f & v1, Vector2f & v2);
+    inline Real32   Angle         (Vector2f & v1, Vector2f & v2);
+    inline Vector2f Lerp          (Vector2f & start, Vector2f & end, Real32 t);
 
     //==== Implementation begin ====//
-    Vector2f::Vector2f (void) : x(0), y(0) { };
-
-    Vector2f::Vector2f (Real32 x) : x(x), y(x) { };
-
-    Vector2f::Vector2f (Real32 x, Real32 y) : x(x), y(y) { };
-
-    Vector2f Vector2f::operator +(const Vector2f & rhs)
+    inline Vector2f Vector2f::operator +(const Vector2f & rhs)
     {
         Vector2f v;
 
@@ -59,9 +48,9 @@ namespace Capstan
         v.y = y + rhs.y;
 
         return v;
-    };
+    }
 
-    Vector2f Vector2f::operator -(const Vector2f & rhs)
+    inline Vector2f Vector2f::operator -(const Vector2f & rhs)
     {
         Vector2f v;
 
@@ -69,9 +58,9 @@ namespace Capstan
         v.y = y - rhs.y;
 
         return v;
-    };
+    }
 
-    Vector2f Vector2f::operator *(const Vector2f & rhs)
+    inline Vector2f Vector2f::operator *(const Vector2f & rhs)
     {
         Vector2f v;
 
@@ -79,9 +68,9 @@ namespace Capstan
         v.y = y * rhs.y;
 
         return v;
-    };
+    }
 
-    Vector2f Vector2f::operator /(const Vector2f & rhs)
+    inline Vector2f Vector2f::operator /(const Vector2f & rhs)
     {
         Vector2f v;
 
@@ -89,29 +78,29 @@ namespace Capstan
         v.y = y / rhs.y;
 
         return v;
-    };
+    }
 
-    Bool32 Vector2f::operator ==(const Vector2f & rhs)
+    inline Bool32 Vector2f::operator ==(const Vector2f & rhs)
     {
         return (x == rhs.x && y == rhs.y);
-    };
+    }
 
-    Vector2f Vector2f::operator +(const Real32 & scalar)
+    inline Vector2f Vector2f::operator +(const Real32 & scalar)
     {
         return Vector2f(x + scalar, y + scalar);
     }
 
-    Vector2f Vector2f::operator -(const Real32 & scalar)
+    inline Vector2f Vector2f::operator -(const Real32 & scalar)
     {
         return Vector2f(x - scalar, y - scalar);
     }
 
-    Vector2f Vector2f::operator *(const Real32 & scalar)
+    inline Vector2f Vector2f::operator *(const Real32 & scalar)
     {
         return Vector2f(x * scalar, y * scalar);
     }
 
-    Vector2f Vector2f::operator /(const Real32 & scalar)
+    inline Vector2f Vector2f::operator /(const Real32 & scalar)
     {
         return Vector2f(x / scalar, y / scalar);
     }

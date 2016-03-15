@@ -19,7 +19,7 @@ namespace Platform
         return 1.0 / (Real64)frequency.QuadPart;
     }
 
-    Real64 GetCurrentTime (void)
+    Real64 GetTime (void)
     {
         local_persist Real64 period = GetPeriod();
 

@@ -1,11 +1,13 @@
-#ifndef CAPSTAN_CAMERA_H
-#define CAPSTAN_CAMERA_H
+#ifndef CAPSTAN_GRAPHICS_CAMERA_H
+#define CAPSTAN_GRAPHICS_CAMERA_H
 
 
 #include "Math/Vector3f.h"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     class Camera
     {
@@ -21,6 +23,7 @@ namespace Capstan
         Vector3f right;
         Vector3f up;
     };
+}
 }
 
 

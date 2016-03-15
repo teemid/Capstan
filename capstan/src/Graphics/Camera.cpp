@@ -1,7 +1,9 @@
-#include "OpenGL/Camera.h"
+#include "Graphics/Camera.h"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     Camera::Camera(void) { }
 
@@ -12,4 +14,5 @@ namespace Capstan
     }
 
     Camera::~Camera(void) { }
+}
 }

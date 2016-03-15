@@ -2,34 +2,39 @@
 #define CAPSTAN_COLOR_H
 
 
-struct Color3f
+namespace Capstan
 {
-    union
+    struct Color3f
     {
-        Real32 data[3];
-        struct
+        union
         {
-            Real32 r;
-            Real32 g;
-            Real32 b;
+            Real32 data[3];
+            struct
+            {
+                Real32 r;
+                Real32 g;
+                Real32 b;
+            };
         };
     };
-};
 
-struct Color4f
-{
-    union
+    inline Lerp (Color3f start, Color3f end, Real32 t);
+
+    struct Color4f
     {
-        Real32 data[4];
-        struct
+        union
         {
-            Real32 r;
-            Real32 g;
-            Real32 b;
-            Real32 a;
+            Real32 data[4];
+            struct
+            {
+                Real32 r;
+                Real32 g;
+                Real32 b;
+                Real32 a;
+            };
         };
     };
-};
+}
 
 
 #endif

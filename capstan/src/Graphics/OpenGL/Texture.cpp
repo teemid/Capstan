@@ -1,9 +1,12 @@
-#include "OpenGL/Texture.h"
+#include "Graphics/OpenGL/Texture.h"
 
 
 namespace Capstan
 {
+namespace Graphics
+{
     Texture::Texture (void) { };
 
     Texture::~Texture (void) { };
+}
 }

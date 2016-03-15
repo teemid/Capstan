@@ -1,10 +1,13 @@
-#ifndef CAPSTAN_RENDER_MANAGER_H
-#define CAPSTAN_RENDER_MANAGER_H
+#ifndef CAPSTAN_GRAPHICS_RENDER_MANAGER_H
+#define CAPSTAN_GRAPHICS_RENDER_MANAGER_H
 
-#include "Renderer.h"
+
+#include "Graphics/Renderer.h"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     class RenderManager
     {
@@ -18,6 +21,7 @@ namespace Capstan
     private:
         Renderer * renderer;
     };
+}
 }
 
 

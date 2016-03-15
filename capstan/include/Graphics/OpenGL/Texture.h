@@ -1,7 +1,10 @@
-#ifndef CAPSTAN_TEXTURE_H
-#define CAPSTAN_TEXTURE_H
+#ifndef CAPSTAN_GRAPHICS_OPENGL_TEXTURE_H
+#define CAPSTAN_GRAPHICS_OPENGL_TEXTURE_H
+
 
 namespace Capstan
+{
+namespace Graphics
 {
     class Texture
     {
@@ -33,6 +36,7 @@ namespace Capstan
         ~Texture (void);
     private:
     };
+}
 }
 
 #endif

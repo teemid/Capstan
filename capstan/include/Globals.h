@@ -3,15 +3,23 @@
 
 
 #include "AssetManager.h"
+#include "InputManager.h"
 #include "MemoryManager.h"
-#include "RenderManager.h"
 #include "Timer.h"
+#include "Graphics/RenderManager.h"
+#include "Platform/FileSystem.h"
 
 
-extern InputManager gInputManager;
-extern MemoryManager gMemoryManager;
-extern RenderManager gRenderManager;
-extern Timer gTimer;
+
+namespace Capstan
+{
+    extern AssetManager            gAssetManager;
+    extern FileSystem              gFileSystem;
+    extern InputManager            gInputManager;
+    extern MemoryManager           gMemoryManager;
+    extern Graphics::RenderManager gRenderManager;
+    extern Timer                   gTimer;
+}
 
 
 #endif

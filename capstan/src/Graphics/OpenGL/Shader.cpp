@@ -1,14 +1,15 @@
-#include "OpenGL/Shader.h"
+#include "Globals.h"
+
+#include "Graphics/OpenGL/Shader.h"
 
 #include "Platform/Assert.h"
 #include "Platform/Debug.h"
-#include "Platform/memory.h"
-
-#include "AssetManager.h"
-#include "SystemManager.h"
+#include "Platform/Memory.h"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     Shader::Shader (void)
     {
@@ -17,10 +18,8 @@ namespace Capstan
 
     Shader::Shader (GLchar * vertexShader, GLchar * fragmentShader)
     {
-        AssetManager * gAssetManager = (AssetManager *)System::Get(System::Type::Asset);
-
-        ShaderAsset vertexShaderAsset = gAssetManager->LoadShader(vertexShader);
-        ShaderAsset fragmentShaderAsset = gAssetManager->LoadShader(fragmentShader);
+        ShaderAsset vertexShaderAsset = gAssetManager.LoadShader(vertexShader);
+        ShaderAsset fragmentShaderAsset = gAssetManager.LoadShader(fragmentShader);
 
         this->program = glCreateProgram();
 
@@ -64,7 +63,9 @@ namespace Capstan
 
     GLuint Shader::Compile (GLenum shaderStage, GLchar ** shaderSource)
     {
+
         GLuint shader = glCreateShader(shaderStage);
+
         glShaderSource(shader, 1, shaderSource, NULL);
         glCompileShader(shader);
 
@@ -107,4 +108,5 @@ namespace Capstan
     {
         glDeleteProgram(this->program);
     }
+}
 }
