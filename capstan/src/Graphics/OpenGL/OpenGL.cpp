@@ -1,5 +1,12 @@
-#include "OpenGL/OpenGL.h"
+#include "Globals.h"
+#include "strings.h"
+#include "utils.h"
 
+#include "Graphics/OpenGL/OpenGL.h"
+
+#include "Math/Matrix4f.h"
+#include "Math/Vector3f.h"
+#include "Math/Vector4f.h"
 
 #include "Platform/Assert.h"
 #include "Platform/Debug.h"
@@ -10,21 +17,13 @@
 #include "Platform/Win32/Debug.h"
 #include "Platform/Win32/WGLExtensions.h"
 
-#include "AssetManager.h"
-#include "strings.h"
-#include "SystemManager.h"
-
-#include "Math/Matrix4f.h"
-#include "Math/Vector4f.h"
-
-#include "utils.h"
-
-
 // NOTE (Emil): Brings in auto generated OpenGL function declarations.
 #include "FunctionDeclarations.inl"
 
 
 namespace Capstan
+{
+namespace Graphics
 {
     #define GetFunction(type, name) name = (type)Platform::GetFunctionAddress(#name)
 
@@ -133,8 +132,6 @@ namespace Capstan
 
         glBindVertexArray(0);  // Unbind the VAO
 
-        AssetManager * gAssetManager = (AssetManager *)System::Get(System::Type::Asset);
-
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -144,15 +141,20 @@ namespace Capstan
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        ImageAsset image = gAssetManager->LoadTexture("images/heart.bmp");
+        ImageAsset image = gAssetManager.LoadTexture("images/heart.bmp");
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         // glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
 
 
+        Vector3f cameraPosition = Vector3f(0.0f, 0.0f, 3.0f);
+        Vector3f cameraTarget = Vector3f(0.0f, 0.0f, 0.0f);
+        Vector3f cameraDirection = Normalize(cameraPosition - cameraTarget);
+
+
         view = Translate(Vector3f(0.0f, 0.0f, 0.0f));
-        // projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+        projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 
         this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
         this->shader->SetUniform("projection", UniformType::Matrix4fv, (void *)projection.data);
@@ -169,16 +171,16 @@ namespace Capstan
     void OpenGL::Render (void)
     {
         static Real32 angle = 0.0f;
-        // static Vector3f translation = Vector3f(0.0f, 0.0f, 0.0f);
+        static Vector3f translation = Vector3f(0.0f, 0.0f, 0.0f);
 
         angle += 0.0002f;
-        // translation.z += 0.0000001f;
+        translation.z -= 0.00001f;
 
         model = Rotate(angle, Vector3f(1.0f, 0.0f, 0.0f));
-        // view = Translate(translation);
+        view = Translate(translation);
 
         this->shader->SetUniform("model", UniformType::Matrix4fv, (void *)model.data);
-        // this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
+        this->shader->SetUniform("view", UniformType::Matrix4fv, (void *)view.data);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -194,4 +196,5 @@ namespace Capstan
 
         Platform::SwapBuffers();
     }
+}
 }

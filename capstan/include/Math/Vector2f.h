@@ -1,169 +1,140 @@
-#ifndef CAPSTAN_MATH_VECTOR2_H
-#define CAPSTAN_MATH_VECTOR2_H
+#ifndef CAPSTAN_MATH_VECTOR2F_H
+#define CAPSTAN_MATH_VECTOR2F_H
 
-// NOTE (Emil): This file is included at the bottom of Vector.h.
+#include "Platform/Intrinsics.h"
+#include "Platform/Types.h"
 
 
-template<>
-struct Vector<Real32, 2>
+namespace Capstan
 {
-    union {
-        Real32 data[2];
-        struct { Real32 x, y; };
-        struct { Real32 u, v; };
+    struct Vector2f
+    {
+        union {
+            Real32 data[2];
+            struct { Real32 x, y; };
+            struct { Real32 u, v; };
+        };
+
+        Vector2f (void);
+        Vector2f (Real32 x);
+        Vector2f (Real32 x, Real32 y);
+
+        inline Vector2f operator +(const Vector2f & rhs);
+        inline Vector2f operator -(const Vector2f & rhs);
+        inline Vector2f operator *(const Vector2f & rhs);
+        inline Vector2f operator /(const Vector2f & rhs);
+
+        inline Vector2f operator +(const Real32 & scalar);
+        inline Vector2f operator -(const Real32 & scalar);
+        inline Vector2f operator *(const Real32 & scalar);
+        inline Vector2f operator /(const Real32 & scalar);
+
+        inline Bool32 operator ==(const Vector2f & rhs);
     };
 
-    Vector (void);
-    Vector (Real32 x);
-    Vector (Real32 x, Real32 y);
+    inline Vector2f Normalize     (Vector2f & v);
+    inline Real32   LengthSquared (Vector2f & v);
+    inline Real32   Length        (Vector2f & v);
+    inline Real32   Dot           (Vector2f & v1, Vector2f & v2);
+    inline Real32   Angle         (Vector2f & v1, Vector2f & v2);
+    inline Vector2f Lerp          (Vector2f & start, Vector2f & end, Real32 t);
 
-    Vector2f operator +(const Vector2f & rhs);
-    Vector2f operator -(const Vector2f & rhs);
-    Vector2f operator *(const Vector2f & rhs);
-    Vector2f operator /(const Vector2f & rhs);
+    //==== Implementation begin ====//
+    inline Vector2f Vector2f::operator +(const Vector2f & rhs)
+    {
+        Vector2f v;
 
-    Vector2f operator +(const Real32 & scalar);
-    Vector2f operator -(const Real32 & scalar);
-    Vector2f operator *(const Real32 & scalar);
-    Vector2f operator /(const Real32 & scalar);
+        v.x = x + rhs.x;
+        v.y = y + rhs.y;
 
-    Bool32 operator ==(const Vector2f & rhs);
-};
+        return v;
+    }
 
-template<>
-inline Vector2f Normalize (Vector2f & v);
+    inline Vector2f Vector2f::operator -(const Vector2f & rhs)
+    {
+        Vector2f v;
 
-template<>
-inline Real32 LengthSquared (Vector2f & v);
+        v.x = x - rhs.x;
+        v.y = y - rhs.y;
 
-template<>
-inline Real32 Length (Vector2f & v);
+        return v;
+    }
 
-template<>
-inline Vector2f Cross (Vector2f & v1, Vector2f & v2);
+    inline Vector2f Vector2f::operator *(const Vector2f & rhs)
+    {
+        Vector2f v;
 
-template<>
-inline Real32 Dot (Vector2f & v1, Vector2f & v2);
+        v.x = x * rhs.x;
+        v.y = y * rhs.y;
 
-template<>
-inline Real32 Angle (Vector2f & v1, Vector2f & v2);
+        return v;
+    }
 
-template <>
-inline Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t);
+    inline Vector2f Vector2f::operator /(const Vector2f & rhs)
+    {
+        Vector2f v;
 
-//==== Implementation begin ====//
-Vector2f::Vector (void) : x(0), y(0) { };
+        v.x = x / rhs.x;
+        v.y = y / rhs.y;
 
-Vector2f::Vector (Real32 x) : x(x), y(x) { };
+        return v;
+    }
 
-Vector2f::Vector (Real32 x, Real32 y) : x(x), y(y) { };
+    inline Bool32 Vector2f::operator ==(const Vector2f & rhs)
+    {
+        return (x == rhs.x && y == rhs.y);
+    }
 
-Vector2f Vector2f::operator +(const Vector2f & rhs)
-{
-    Vector2f v;
+    inline Vector2f Vector2f::operator +(const Real32 & scalar)
+    {
+        return Vector2f(x + scalar, y + scalar);
+    }
 
-    v.x = x + rhs.x;
-    v.y = y + rhs.y;
+    inline Vector2f Vector2f::operator -(const Real32 & scalar)
+    {
+        return Vector2f(x - scalar, y - scalar);
+    }
 
-    return v;
-};
+    inline Vector2f Vector2f::operator *(const Real32 & scalar)
+    {
+        return Vector2f(x * scalar, y * scalar);
+    }
 
-Vector2f Vector2f::operator -(const Vector2f & rhs)
-{
-    Vector2f v;
+    inline Vector2f Vector2f::operator /(const Real32 & scalar)
+    {
+        return Vector2f(x / scalar, y / scalar);
+    }
 
-    v.x = x - rhs.x;
-    v.y = y - rhs.y;
+    inline Real32 LengthSquared (Vector2f & v)
+    {
+        return v.x * v.x + v.y * v.y;
+    }
 
-    return v;
-};
+    inline Real32 Length (Vector2f & v)
+    {
+        return SquareRoot(LengthSquared(v));
+    }
 
-Vector2f Vector2f::operator *(const Vector2f & rhs)
-{
-    Vector2f v;
+    inline Vector2f Normalize (Vector2f & v)
+    {
+        return v / Length(v);
+    }
 
-    v.x = x * rhs.x;
-    v.y = y * rhs.y;
+    inline Real32 Dot (Vector2f & v1, Vector2f & v2)
+    {
+        return v1.x * v2.x + v1.y * v2.y;
+    }
 
-    return v;
-};
+    inline Real32 Angle (Vector2f & v1, Vector2f & v2)
+    {
+        return Cos(Dot(v1, v2) / Length(v1) * Length(v2));
+    }
 
-Vector2f Vector2f::operator /(const Vector2f & rhs)
-{
-    Vector2f v;
-
-    v.x = x / rhs.x;
-    v.y = y / rhs.y;
-
-    return v;
-};
-
-Bool32 Vector2f::operator ==(const Vector2f & rhs)
-{
-    return (x == rhs.x && y == rhs.y);
-};
-
-Vector2f Vector2f::operator +(const Real32 & scalar)
-{
-    return Vector2f(x + scalar, y + scalar);
+    inline Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t)
+    {
+        return start * (1.0f - t) + end * t;
+    }
+    //==== Implementation end ====//
 }
-
-Vector2f Vector2f::operator -(const Real32 & scalar)
-{
-    return Vector2f(x - scalar, y - scalar);
-}
-
-Vector2f Vector2f::operator *(const Real32 & scalar)
-{
-    return Vector2f(x * scalar, y * scalar);
-}
-
-Vector2f Vector2f::operator /(const Real32 & scalar)
-{
-    return Vector2f(x / scalar, y / scalar);
-}
-
-template<>
-inline Real32 LengthSquared (Vector2f & v)
-{
-    return v.x * v.x + v.y * v.y;
-}
-
-template<>
-inline Real32 Length (Vector2f & v)
-{
-    return SquareRoot(LengthSquared(v));
-}
-
-template<>
-inline Vector2f Normalize (Vector2f & v)
-{
-    return v / Length(v);
-}
-
-template<>
-inline Vector2f Cross (Vector2f & v1, Vector2f & v2)
-{
-    return Vector2f();
-}
-
-template<>
-inline Real32 Dot (Vector2f & v1, Vector2f & v2)
-{
-    return v1.x * v2.x + v1.y * v2.y;
-}
-
-template<>
-inline Real32 Angle (Vector2f & v1, Vector2f & v2)
-{
-    return Cos(Dot(v1, v2) / Length(v1) * Length(v2));
-}
-
-template <>
-inline Vector2f Lerp (Vector2f & start, Vector2f & end, Real32 t)
-{
-    return start * (1.0f - t) + end * t;
-}
-//==== Implementation end ====//
 
 #endif

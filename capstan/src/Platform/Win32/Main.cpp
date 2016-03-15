@@ -5,12 +5,15 @@
 
 #include "Platform/Assert.h"
 #include "Platform/Debug.h"
+#include "Platform/FileSystem.h"
 #include "Platform/Types.h"
 
 #include "AssetManager.h"
-#include "RenderManager.h"
+#include "InputManager.h"
+#include "Graphics/RenderManager.h"
 #include "MemoryManager.h"
-#include "SystemManager.h"
+#include "Timer.h"
+
 #include "utils.h"
 
 
@@ -18,7 +21,14 @@
 #define FRAME_MS (FRAME_RATE / 1.0)
 
 
-Bool32 gRunning;
+Bool32        gRunning;
+
+Capstan::AssetManager            gAssetManager;
+Capstan::FileSystem              gFileSystem;
+Capstan::InputManager            gInputManager;
+Capstan::MemoryManager           gMemoryManager;
+Capstan::Graphics::RenderManager gRenderManager;
+Capstan::Timer                   gTimer;
 
 
 LRESULT CALLBACK Win32WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -99,33 +109,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     }
 #endif
 
-    Capstan::System::Start(Capstan::System::Type::Memory, MB(400));
-    Capstan::System::Start(Capstan::System::Type::FileSystem);
-    Capstan::System::Start(Capstan::System::Type::Asset, MB(200));
-    Capstan::System::Start(Capstan::System::Type::Renderer);
-
-    Capstan::RenderManager * gRenderManager = (Capstan::RenderManager *)Capstan::System::Get(Capstan::System::Type::Renderer);
+    gMemoryManager.StartUp(MB(400));
+    gFileSystem.StartUp();
+    gAssetManager.StartUp(MB(200));
+    gRenderManager.StartUp();
 
     gRunning = true;
 
-    double delta, interval;
-    LARGE_INTEGER frequency, elapsed, current, previous;
-
-
-    // Returns counts/s
-    QueryPerformanceFrequency(&frequency);
-    // Counts / milliseconds
-    interval = 1.0 / (1000 * frequency.QuadPart);
-    QueryPerformanceCounter(&previous);
-
     while (gRunning)
     {
-        QueryPerformanceCounter(&current);
-        elapsed.QuadPart = (current.QuadPart - previous.QuadPart);
-        delta = (double)(elapsed.QuadPart * interval); // milliseconds
-
-        previous = current;
-
         MSG message;
         while (PeekMessage(&message, windowHandle, 0, 0, PM_REMOVE)) {
             switch (message.message)
@@ -146,15 +138,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
             }
         }
 
-        gRenderManager->Render();
-
-        QueryPerformanceCounter(&previous);
+        gRenderManager.Render();
+        gTimer.Step();
     }
 
-    Capstan::System::ShutDown(Capstan::System::Type::Renderer);
-    Capstan::System::ShutDown(Capstan::System::Type::Asset);
-    Capstan::System::ShutDown(Capstan::System::Type::FileSystem);
-    Capstan::System::ShutDown(Capstan::System::Type::Memory);
+    gRenderManager.ShutDown();
+    gAssetManager.ShutDown();
+    gFileSystem.ShutDown();
+    gMemoryManager.ShutDown();
 
 #ifdef CAPSTAN_CONSOLE
     if (console)
