@@ -23,12 +23,16 @@
 
 Bool32        gRunning;
 
-Capstan::AssetManager            gAssetManager;
-Capstan::FileSystem              gFileSystem;
-Capstan::InputManager            gInputManager;
-Capstan::MemoryManager           gMemoryManager;
-Capstan::Graphics::RenderManager gRenderManager;
-Capstan::Timer                   gTimer;
+namespace Capstan
+{
+    AssetManager            gAssetManager;
+    FileSystem              gFileSystem;
+    InputManager            gInputManager;
+    MemoryManager           gMemoryManager;
+    Graphics::RenderManager gRenderManager;
+    Timer                   gTimer;
+}
+
 
 
 LRESULT CALLBACK Win32WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -109,10 +113,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     }
 #endif
 
-    gMemoryManager.StartUp(MB(400));
-    gFileSystem.StartUp();
-    gAssetManager.StartUp(MB(200));
-    gRenderManager.StartUp();
+    Capstan::gMemoryManager.StartUp(MB(400));
+    Capstan::gFileSystem.StartUp();
+    Capstan::gAssetManager.StartUp(MB(200));
+    Capstan::gRenderManager.StartUp();
 
     gRunning = true;
 
@@ -138,14 +142,14 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
             }
         }
 
-        gRenderManager.Render();
-        gTimer.Step();
+        Capstan::gRenderManager.Render();
+        Capstan::gTimer.Step();
     }
 
-    gRenderManager.ShutDown();
-    gAssetManager.ShutDown();
-    gFileSystem.ShutDown();
-    gMemoryManager.ShutDown();
+    Capstan::gRenderManager.ShutDown();
+    Capstan::gAssetManager.ShutDown();
+    Capstan::gFileSystem.ShutDown();
+    Capstan::gMemoryManager.ShutDown();
 
 #ifdef CAPSTAN_CONSOLE
     if (console)

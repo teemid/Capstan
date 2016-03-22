@@ -7,7 +7,6 @@
 
 #include "BitmapFile.h"
 #include "strings.h"
-#include "SystemManager.h"
 #include "utils.h"
 
 
