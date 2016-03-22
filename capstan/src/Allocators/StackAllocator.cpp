@@ -32,7 +32,7 @@ namespace Capstan
 
         StackAllocation allocation;
         allocation.memory = this->start;
-        this->marker += size;
+        this->marker += (UInt32)size;
         allocation.marker = this->marker;
 
         return allocation;
