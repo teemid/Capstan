@@ -33,6 +33,14 @@ namespace Graphics
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+
+#if CAPSTAN_DEBUG
+        glValidateProgram(program);
+
+        GLchar info[1024];
+        glGetProgramInfoLog(program, 1024, NULL, info);
+        Debug::Print("Program info log: %s", info);
+#endif
     }
 
     void Shader::SetUniform (char * name, UniformType type, void * uniform)
