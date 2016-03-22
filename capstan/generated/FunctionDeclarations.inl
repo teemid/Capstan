@@ -22,6 +22,7 @@ PFNGLCREATEPROGRAMPROC            glCreateProgram;
 PFNGLDELETEPROGRAMPROC            glDeleteProgram;
 PFNGLATTACHSHADERPROC             glAttachShader;
 PFNGLLINKPROGRAMPROC              glLinkProgram;
+PFNGLVALIDATEPROGRAMPROC          glValidateProgram;
 PFNGLUSEPROGRAMPROC               glUseProgram;
 PFNGLGETPROGRAMIVPROC             glGetProgramiv;
 PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog;

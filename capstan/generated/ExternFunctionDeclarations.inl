@@ -22,6 +22,7 @@ extern PFNGLCREATEPROGRAMPROC            glCreateProgram;
 extern PFNGLDELETEPROGRAMPROC            glDeleteProgram;
 extern PFNGLATTACHSHADERPROC             glAttachShader;
 extern PFNGLLINKPROGRAMPROC              glLinkProgram;
+extern PFNGLVALIDATEPROGRAMPROC          glValidateProgram;
 extern PFNGLUSEPROGRAMPROC               glUseProgram;
 extern PFNGLGETPROGRAMIVPROC             glGetProgramiv;
 extern PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog;

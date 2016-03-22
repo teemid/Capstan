@@ -22,6 +22,7 @@ GetFunction(PFNGLCREATEPROGRAMPROC,            glCreateProgram);
 GetFunction(PFNGLDELETEPROGRAMPROC,            glDeleteProgram);
 GetFunction(PFNGLATTACHSHADERPROC,             glAttachShader);
 GetFunction(PFNGLLINKPROGRAMPROC,              glLinkProgram);
+GetFunction(PFNGLVALIDATEPROGRAMPROC,          glValidateProgram);
 GetFunction(PFNGLUSEPROGRAMPROC,               glUseProgram);
 GetFunction(PFNGLGETPROGRAMIVPROC,             glGetProgramiv);
 GetFunction(PFNGLGETPROGRAMINFOLOGPROC,        glGetProgramInfoLog);
