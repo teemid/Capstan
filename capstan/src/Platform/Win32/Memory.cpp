@@ -34,6 +34,12 @@ namespace Memory
     }
 
 
+    void Copy (void * source, void * destination, size_t size)
+    {
+        CopyMemory(destination, source, size);
+    }
+
+
     void Zero (void * memory, size_t size)
     {
         ZeroMemory(memory, size);
