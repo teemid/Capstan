@@ -1,8 +1,8 @@
-#include "Allocators/StackAllocator.h"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/Memory.h"
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/Memory.h"
+#include "Capstan/Allocators/StackAllocator.h"
 
 
 namespace Capstan

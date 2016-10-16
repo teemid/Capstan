@@ -1,12 +1,15 @@
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #include <XInput.h>
 
-#include "Platform/GamePad.h"
-#include "Platform/Memory.h"
-#include "Platform/Types.h"
+#include "Capstan/Types.h"
 
+#include "Capstan/Platform/GamePad.h"
+#include "Capstan/Platform/Memory.h"
 
-#include "Math/Arithmetic.h"
+#include "Capstan/Math/Arithmetic.h"
 
 
 typedef DWORD (* XInputGetStatePtr) (DWORD dwUserIndex, XINPUT_STATE * pState);

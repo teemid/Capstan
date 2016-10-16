@@ -1,5 +1,5 @@
-#include "Graphics/RenderManager.h"
-#include "Graphics/OpenGL/OpenGL.h"
+#include "Capstan/Graphics/RenderManager.h"
+#include "Capstan/Graphics/OpenGL/OpenGL.h"
 
 
 namespace Capstan

@@ -1,9 +1,11 @@
-#include "Platform/Clock.h"
-
-#define local_persist static
-
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
+
+#include "Capstan/Common.h"
+
+#include "Capstan/Platform/Clock.h"
 
 
 namespace Capstan

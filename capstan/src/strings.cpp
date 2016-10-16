@@ -1,4 +1,4 @@
-#include "strings.h"
+#include "Capstan/strings.h"
 
 
 namespace Capstan

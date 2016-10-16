@@ -1,36 +1,40 @@
-#include "Globals.h"
-#include "strings.h"
-#include "utils.h"
+#include "Capstan/Graphics/OpenGL/OpenGL.h"
 
-#include "Graphics/OpenGL/OpenGL.h"
+#include "gl/wglext.h"
 
-#include "Math/Matrix4f.h"
-#include "Math/Vector3f.h"
-#include "Math/Vector4f.h"
+#include "Capstan/Globals.h"
+#include "Capstan/Strings.h"
+#include "Capstan/Types.h"
+#include "Capstan/Utils.h"
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/FileSystem.h"
-#include "Platform/Memory.h"
-#include "Platform/OpenGLContext.h"
-#include "Platform/Types.h"
-#include "Platform/Win32/Debug.h"
-#include "Platform/Win32/WGLExtensions.h"
+#include "Capstan/Math/Matrix4f.h"
+#include "Capstan/Math/Vector3f.h"
+#include "Capstan/Math/Vector4f.h"
 
-// NOTE (Emil): Brings in auto generated OpenGL function declarations.
-#include "FunctionDeclarations.inl"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/FileSystem.h"
+#include "Capstan/Platform/Memory.h"
+#include "Capstan/Platform/OpenGLContext.h"
+#include "Capstan/Platform/Win32/Debug.h"
+
+#include "Capstan/Graphics/OpenGL/Shader.h"
+
+
+// NOTE(Emil): Define OpenGL functions.
+#define CAPSTAN_GL(type, name) type name;
+#include "Capstan/Graphics/OpenGL/Functions.def"
 
 
 namespace Capstan
 {
 namespace Graphics
 {
-    #define GetFunction(type, name) name = (type)Platform::GetFunctionAddress(#name)
-
-    void LoadFunctions (void)
+    internal void LoadFunctions (void)
     {
-        // Asks the driver or OpenGL.dll for the functions declared in "FunctionDeclarations.inl"
-        #include "LoadFunctions.inl"
+        // Ask for OpenGL function addresses. This is platform dependant.
+        #define CAPSTAN_GL(type, name) name = (type)Platform::GetFunctionAddress(#name);
+        #include "Capstan/Graphics/OpenGL/functions.def"
     }
 
 

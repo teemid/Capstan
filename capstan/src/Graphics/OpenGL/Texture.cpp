@@ -1,4 +1,4 @@
-#include "Graphics/OpenGL/Texture.h"
+#include "Capstan/Graphics/OpenGL/Texture.h"
 
 
 namespace Capstan

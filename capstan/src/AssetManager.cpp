@@ -1,13 +1,13 @@
-#include "AssetManager.h"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/FileSystem.h"
+#include "Capstan/Platform/Memory.h"
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/FileSystem.h"
-#include "Platform/Memory.h"
+#include "Capstan/BitmapFile.h"
+#include "Capstan/Strings.h"
+#include "Capstan/Utils.h"
 
-#include "BitmapFile.h"
-#include "strings.h"
-#include "utils.h"
+#include "Capstan/AssetManager.h"
 
 
 namespace Capstan

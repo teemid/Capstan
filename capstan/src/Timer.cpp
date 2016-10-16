@@ -1,6 +1,6 @@
-#include "Timer.h"
+#include "Capstan/Platform/Clock.h"
 
-#include "Platform/Clock.h"
+#include "Capstan/Timer.h"
 
 
 namespace Capstan

@@ -1,20 +1,26 @@
-#include "Platform/OpenGLContext.h"
-
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #include <Wingdi.h>
-#include <gl/GL.h>
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/Win32/Debug.h"
-#include "Platform/Win32/WGLExtensions.h"
+#include "Capstan/Common.h"
+#include "Capstan/Strings.h"
+#include "Capstan/Utils.h"
 
-#include "strings.h"
-#include "utils.h"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/Win32/Debug.h"
+
+#include "Capstan/Graphics/OpenGL/OpenGL.h"
+#include "Capstan/Platform/OpenGLContext.h"
+
+// NOTE (Emil): wglext.h is dependent on gl.h.
+#include "gl/wglext.h"
 
 
-PFNWGLGETEXTENSIONSSTRINGARB      wglGetExtensionsStringARB;
-PFNWGLCREATECONTEXTATTRIBSARB     wglCreateContextAttribsARB;
+internal PFNWGLGETEXTENSIONSSTRINGARBPROC  wglGetExtensionsStringARB = nullptr;
+internal PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 
 
 namespace Capstan
@@ -30,59 +36,63 @@ namespace Platform
         HWND windowHandle = GetActiveWindow();
         deviceContext = GetDC(windowHandle);
 
-        PIXELFORMATDESCRIPTOR desiredPixelFormat = {};
-        desiredPixelFormat.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-        desiredPixelFormat.nVersion = 1;
-        desiredPixelFormat.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-        desiredPixelFormat.iPixelType = PFD_TYPE_RGBA;
-        desiredPixelFormat.cColorBits = 24;
-        desiredPixelFormat.cAlphaBits = 8;
-        desiredPixelFormat.cAccumBits = 0;
-        desiredPixelFormat.cDepthBits = 24;
-        desiredPixelFormat.cStencilBits = 8;
+        PIXELFORMATDESCRIPTOR desired = {};
+        desired.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+        desired.nVersion = 1;
+        desired.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+        desired.iPixelType = PFD_TYPE_RGBA;
+        desired.cColorBits = 24;
+        desired.cAlphaBits = 8;
+        desired.cAccumBits = 0;
+        desired.cDepthBits = 24;
+        desired.cStencilBits = 8;
 
         //--- START TEMP RENDER CONTEXT ---//
-        int pixelFormat = ChoosePixelFormat(deviceContext, &desiredPixelFormat);
-
+        Int32 pixelFormat = ChoosePixelFormat(deviceContext, &desired);
         assert(pixelFormat);
 
-        PIXELFORMATDESCRIPTOR suggestedPixelFormat = {};
-        assert(DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggestedPixelFormat), &suggestedPixelFormat));
+        PIXELFORMATDESCRIPTOR suggested = {};
+        assert(DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggested), &suggested));
 
-        assert(SetPixelFormat(deviceContext, pixelFormat, &suggestedPixelFormat));
+        assert(SetPixelFormat(deviceContext, pixelFormat, &suggested));
 
         renderContext = wglCreateContext(deviceContext);
-
         assert(renderContext);
 
         wglMakeCurrent(deviceContext, renderContext);
 
         //--- START GET wglExtensions ---//
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARB)wglGetProcAddress("wglGetExtensionsStringARB");
+        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
 
-        if (!wglGetExtensionsStringARB)
+        if (wglGetExtensionsStringARB)
         {
-            Debug::Win32HandleError();
+            const char * extensions = wglGetExtensionsStringARB(deviceContext);
+
+            Bool32 HasWglARBCreateContext = String::Find(extensions, "WGL_ARB_create_context");
+            Bool32 HasWglARBCreateContextProfile = String::Find(extensions, "WGL_ARB_create_context_profile");
+
+            if (HasWglARBCreateContext && HasWglARBCreateContextProfile)
+            {
+                wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+
+                assert(wglCreateContextAttribsARB);
+            }
         }
-
-        const char * extensions = wglGetExtensionsStringARB(deviceContext);
-
-        Bool32 HasWglARBCreateContext = String::Find(extensions, "WGL_ARB_create_context");
-        Bool32 HasWglARBCreateContextProfile = String::Find(extensions, "WGL_ARB_create_context_profile");
-
-        if (HasWglARBCreateContext && HasWglARBCreateContextProfile)
+        else
         {
-            wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARB)wglGetProcAddress("wglCreateContextAttribsARB");
+            wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 
             assert(wglCreateContextAttribsARB);
         }
+
+
 
         DeleteContext();
         //--- END GET wglExtensions ---//
         //--- END TEMP RENDER CONTEXT ---//
 
         //--- START GET EXTENSION RENDER CONTEXT ---//
-        pixelFormat = ChoosePixelFormat(deviceContext, &desiredPixelFormat);
+        pixelFormat = ChoosePixelFormat(deviceContext, &desired);
 
         if (!pixelFormat)
         {
@@ -91,16 +101,16 @@ namespace Platform
             return false;
         }
 
-        suggestedPixelFormat = {};
+        suggested = {};
 
-        if (!DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggestedPixelFormat), &suggestedPixelFormat))
+        if (!DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggested), &suggested))
         {
             Debug::Win32HandleError();
 
             return false;
         }
 
-        if (!SetPixelFormat(deviceContext, pixelFormat, &suggestedPixelFormat))
+        if (!SetPixelFormat(deviceContext, pixelFormat, &suggested))
         {
             Debug::Win32HandleError();
 
@@ -118,13 +128,13 @@ namespace Platform
 
         if (!renderContext)
         {
-            GLenum code = GL_NO_ERROR;
-            code = glGetError();
+            // GLenum code = GL_NO_ERROR;
+            // code = glGetError();
 
-            if (code != GL_NO_ERROR)
-            {
-                Debug::Print("OpenGL error: %d", code);
-            }
+            // if (code != GL_NO_ERROR)
+            // {
+            //     Debug::Print("OpenGL error: %d", code);
+            // }
 
             Debug::Win32HandleError();
 
@@ -138,7 +148,7 @@ namespace Platform
             return false;
         }
 
-        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARB)wglGetProcAddress("wglGetExtensionsStringARB");
+        wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
 
         if (wglGetExtensionsStringARB)
         {
@@ -153,8 +163,8 @@ namespace Platform
             return false;
         }
 
-        Debug::Print((char *)glGetString(GL_VENDOR));
-        Debug::Print((char *)glGetString(GL_VERSION));
+        // Debug::Print((char *)glGetString(GL_VENDOR));
+        // Debug::Print((char *)glGetString(GL_VERSION));
 
         return true;
         //--- END GET EXTENSION RENDER CONTEXT ---//

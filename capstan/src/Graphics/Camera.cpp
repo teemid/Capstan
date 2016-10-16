@@ -1,4 +1,4 @@
-#include "Graphics/Camera.h"
+#include "Capstan/Graphics/Camera.h"
 
 
 namespace Capstan

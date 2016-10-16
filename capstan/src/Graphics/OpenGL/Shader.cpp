@@ -1,10 +1,10 @@
-#include "Globals.h"
+#include "Capstan/Globals.h"
 
-#include "Graphics/OpenGL/Shader.h"
+#include "Capstan/Graphics/OpenGL/Shader.h"
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/Memory.h"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/Memory.h"
 
 
 namespace Capstan

@@ -1,4 +1,4 @@
-#include "InputManager.h"
+#include "Capstan/InputManager.h"
 
 
 namespace Capstan

@@ -1,7 +1,11 @@
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 
-#include "Platform/Win32/Debug.h"
-#include "Platform/Memory.h"
+#include "Capstan/Platform/Win32/Debug.h"
+
+#include "Capstan/Platform/Memory.h"
 
 
 namespace Capstan

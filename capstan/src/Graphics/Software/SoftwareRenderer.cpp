@@ -1,4 +1,4 @@
-#include "Graphics/Software/SoftwareRenderer.h"
+#include "Capstan/Graphics/Software/SoftwareRenderer.h"
 
 
 namespace Capstan

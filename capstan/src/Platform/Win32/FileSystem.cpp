@@ -1,12 +1,15 @@
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 
-#include "Platform/Assert.h"
-#include "Platform/Debug.h"
-#include "Platform/FileSystem.h"
-#include "Platform/Win32/Debug.h"
+#include "Capstan/Globals.h"
+#include "Capstan/Utils.h"
 
-#include "Globals.h"
-#include "utils.h"
+#include "Capstan/Platform/Assert.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/FileSystem.h"
+#include "Capstan/Platform/Win32/Debug.h"
 
 
 namespace Capstan

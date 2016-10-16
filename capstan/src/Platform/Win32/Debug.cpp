@@ -1,9 +1,13 @@
-#include <stdarg.h>
-#include <stdio.h>
+#include <cstdarg>
+#include <cstdio>
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 
-#include "Platform/Debug.h"
-#include "Platform/Win32/Debug.h"
+#include "Capstan/Platform/Debug.h"
+#include "Capstan/Platform/Win32/Debug.h"
 
 
 namespace Capstan
@@ -24,6 +28,7 @@ namespace Debug
 
     void Print (char * formattedString, ...)
     {
+        char buffer[250];
         va_list args;
         va_start(args, formattedString);
         sprintf_s(buffer, formattedString, args);
