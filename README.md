@@ -1,3 +1,1 @@
-Capstan is a game engine
-
-Capstan is a learning project.
+Capstan is a game engine and a work in progress
