@@ -48,7 +48,7 @@ namespace Capstan
 
         Assert(accessRights, "Failed to set access rights for file.\n");
 
-        Debug::Print("Access rights: %d\n", accessRights);
+        // Debug::Print("Access rights: %d\n", accessRights);
 
         return accessRights;
     }
@@ -67,7 +67,7 @@ namespace Capstan
             fileAttributes |= FILE_FLAG_RANDOM_ACCESS;
         }
 
-        Debug::Print("File Attributes %d\n", fileAttributes);
+        // Debug::Print("File Attributes %d\n", fileAttributes);
 
         return fileAttributes;
     }
@@ -85,12 +85,7 @@ namespace Capstan
             NULL
         );
 
-        if (file->platform->handle == INVALID_HANDLE_VALUE)
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
+        Assert((file->platform->handle != INVALID_HANDLE_VALUE), "Invalid file handle.\n");
 
         file->open = true;
         file->size = 0;
@@ -237,9 +232,7 @@ namespace Capstan
             }
         }
 
-        if (fileHandle == INVALID_HANDLE_VALUE) {
-            Debug::Win32HandleError();
-        }
+        Assert((fileHandle != INVALID_HANDLE_VALUE), "Invalid file handle.\n");
 
         DWORD bytesRead;
         BOOL result = ReadFile(
