@@ -46,7 +46,7 @@ namespace Capstan
         if (mode & FileSystem::ReadFlag) { accessRights |= GENERIC_READ; }
         else if (mode & FileSystem::WriteFlag) { accessRights |= GENERIC_WRITE; }
 
-        assert(accessRights);
+        Assert(accessRights, "Failed to set access rights for file.\n");
 
         Debug::Print("Access rights: %d\n", accessRights);
 
@@ -114,20 +114,12 @@ namespace Capstan
 
         LARGE_INTEGER fileSize;
         DWORD result = GetFileSizeEx(file->platform->handle, &fileSize);
-
-        if (result == INVALID_FILE_SIZE)
-        {
-            Debug::Win32HandleError();
-        }
-
+    
+        Assert((result != INVALID_FILE_SIZE), "Could not get file size for %s.\n", filename);
+    
         file->size = (size_t)fileSize.QuadPart;
 
-        if (file->platform->handle == INVALID_HANDLE_VALUE)
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
+        Assert((file->platform->handle != INVALID_HANDLE_VALUE), "Invalid file handle.\n");
 
         file->open = true;
 
@@ -145,20 +137,8 @@ namespace Capstan
             NULL
         );
 
-        if (!result) {
-            Debug::Win32HandleError();
-
-            return false;
-        }
-
-        if (bytesRead != bytesToRead)
-        {
-            Debug::Win32HandleError();
-
-            assert(bytesRead == bytesToRead);
-
-            return false;
-        }
+        Assert(result, "Could not read file.\n");
+        Assert(bytesRead == bytesToRead, "Failed to read entire file.\n");
 
         return true;
     }
@@ -180,25 +160,11 @@ namespace Capstan
 
     Bool32 FileSystem::Close (File * file)
     {
-        if (file->platform->handle == INVALID_HANDLE_VALUE)
-        {
-            Debug::Print("Tried to close an invalid file handle.");
-
-            assert(0);
-
-            return false;
-        }
+        Assert((file->platform->handle != INVALID_HANDLE_VALUE), "Tried to close an invalid file handle.\n");
 
         auto result = CloseHandle(file->platform->handle);
 
-        if (!result)
-        {
-            Debug::Win32HandleError();
-
-            assert(0);
-
-            return false;
-        }
+        Assert(result, "Failed to close a file handle.\n");
 
         file->platform->handle = INVALID_HANDLE_VALUE;
         file->open = false;
@@ -219,20 +185,14 @@ namespace Capstan
             NULL
         );
 
-        if (fileHandle == INVALID_HANDLE_VALUE)
-        {
-            Debug::Win32HandleError();
-        }
+        Assert((fileHandle != INVALID_HANDLE_VALUE), "Invalid file handle.\n");
 
         LARGE_INTEGER fileSize;
         auto result = ::GetFileSizeEx(fileHandle, &fileSize);
 
         // If the function fails and lpFilSizeHigh is NULL
         // If the function fails and lpFileSizeHigh is non-NULL
-        if (!result)
-        {
-            Debug::Win32HandleError();
-        }
+        Assert(result, "Failed to get file size.\n");
 
         return (Int64)fileSize.QuadPart;
     }
@@ -290,11 +250,8 @@ namespace Capstan
             NULL
         );
 
-        assert(bytesRead == size);
-
-        if (!result) {
-            Debug::Win32HandleError();
-        }
+        Assert(result, "Failed to read the file.\n");
+        Assert(bytesRead == size, "Failed to read the entire file.\n");
 
         // TODO (Emil): Should something more be done here?
         // Should the function return a boolean for success?

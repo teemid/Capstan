@@ -9,10 +9,10 @@ namespace Capstan
 {
 namespace Memory
 {
-    void * Allocate(size_t size);
-    void * Reallocate(void * memory, size_t prevSize, size_t newSize);
-    void Copy (void * source, void * destination, size_t size);
-    void Zero (void * memory, size_t size);
+    void * Allocate(Size size);
+    void * Reallocate(void * memory, Size prevSize, Size newSize);
+    void Copy (void * source, void * destination, Size size);
+    void Zero (void * memory, Size size);
     Bool32 Free (void * memory);
 }
 }

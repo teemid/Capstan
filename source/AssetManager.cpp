@@ -55,7 +55,7 @@ namespace Capstan
         FileSystem::Read(&file, (void *)&fileHeader, sizeof(BitmapCoreHeader));
 
         char signature[2] = { 'B', 'M' };
-        assert(String::Compare(fileHeader.signature, signature, ArrayLength(signature)));
+        Assert(String::Compare(fileHeader.signature, signature, ArrayLength(signature)), "File is not a bitmap.\n");
 
         BitmapInfoHeader bitmapHeader = {};
 

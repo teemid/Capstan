@@ -1,3 +1,4 @@
+#include "Capstan/Common.h"
 #include "Capstan/Globals.h"
 
 #include "Capstan/Graphics/OpenGL/Shader.h"
@@ -61,11 +62,7 @@ namespace Graphics
             {
                 glUniform4fv(location, 1, (GLfloat *)uniform);
             } break;
-            default:
-            {
-                Debug::Print("There is not default uniform type in Shader.SetUniform");
-                assert(0);
-            } break;
+            ILLEGAL_CASE("There is not default uniform type in Shader.SetUniform");
         }
     }
 
@@ -84,8 +81,7 @@ namespace Graphics
         {
             GLchar info[1024];
             glGetShaderInfoLog(shader, 1024, NULL, info);
-            Debug::Print("Shader failed to compile: %s", info);
-            assert(success);
+            Assert(success, "Shader failed to compile: %s", info);
         }
 
         return shader;
@@ -102,8 +98,7 @@ namespace Graphics
         {
             GLchar info[1024];
             glGetProgramInfoLog(this->program, 1024, NULL, info);
-            Debug::Print("Shader program failed to link: %s", info);
-            assert(success);
+            Assert(success, "Shader program failed to link: %s", info);
         }
     }
 

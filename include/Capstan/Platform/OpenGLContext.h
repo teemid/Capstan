@@ -1,7 +1,6 @@
 #ifndef CAPSTAN_PLATFORM_OPENGL_CONTEXT_H
 #define CAPSTAN_PLATFORM_OPENGL_CONTEXT_H
 
-
 #include "Capstan/Types.h"
 
 
@@ -9,12 +8,16 @@ namespace Capstan
 {
 namespace Platform
 {
-    Bool32 CreateContext(void);
-    Bool32 DeleteContext(void);
+    struct PlatformData;
 
-    void * GetFunctionAddress(char * name);
+    namespace OpenGL
+    {
+        Bool32 CreateContext (PlatformData * data, Int32 major_version, Int32 minor_version);
+        Bool32 DeleteContext (PlatformData * data);
+        Bool32 SwapBuffers (PlatformData * data);
 
-    Bool32 SwapBuffers (void);
+        void * GetFunctionAddress (char * name);
+    }
 }
 }
 

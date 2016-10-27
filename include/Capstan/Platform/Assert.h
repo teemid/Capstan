@@ -22,14 +22,18 @@ namespace Capstan
     void ReportAssertFailure (char * msg, char * filename, int linenumber);
 }
 
+#include <cstdlib>
+#include <cstdio>
 
-#define assert(expr) \
-        if (expr) {} \
-        else \
-        { \
-            Capstan::ReportAssertFailure(#expr, __FILE__, __LINE__); \
-            HALT(); \
-        }
+#define Assert(expression, message, ...) \
+    if (!expression) \
+    { \
+        printf("Expression: %s failed at %s: %i", #expression, __FILE__, __LINE__); \
+        printf(message, __VA_ARGS__); \
+        \
+        HALT(); \
+    } \
+    else { }
 
 #else
 

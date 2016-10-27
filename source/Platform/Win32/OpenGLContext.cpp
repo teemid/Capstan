@@ -5,17 +5,19 @@
 #include <Wingdi.h>
 
 #include "Capstan/Common.h"
+#include "Capstan/Globals.h"
 #include "Capstan/Strings.h"
 #include "Capstan/Utils.h"
 
 #include "Capstan/Platform/Assert.h"
 #include "Capstan/Platform/Debug.h"
 #include "Capstan/Platform/Win32/Debug.h"
+#include "Capstan/Platform/Win32/PlatformData.h"
 
 #include "Capstan/Graphics/OpenGL/OpenGL.h"
 #include "Capstan/Platform/OpenGLContext.h"
 
-// NOTE (Emil): wglext.h is dependent on gl.h.
+// NOTE (Emil): wglext.h is dependent on type definitions in gl.h.
 #include "gl/wglext.h"
 
 
@@ -27,15 +29,10 @@ namespace Capstan
 {
 namespace Platform
 {
-    internal HDC deviceContext = 0;
-    internal HGLRC renderContext = 0;
-
-
-    Bool32 CreateContext (void)
+namespace OpenGL
+{
+    Bool32 CreateContext (PlatformData * data, Int32 major_version, Int32 minor_version)
     {
-        HWND windowHandle = GetActiveWindow();
-        deviceContext = GetDC(windowHandle);
-
         PIXELFORMATDESCRIPTOR desired = {};
         desired.nSize = sizeof(PIXELFORMATDESCRIPTOR);
         desired.nVersion = 1;
@@ -48,25 +45,22 @@ namespace Platform
         desired.cStencilBits = 8;
 
         //--- START TEMP RENDER CONTEXT ---//
-        Int32 pixelFormat = ChoosePixelFormat(deviceContext, &desired);
-        assert(pixelFormat);
+        Int32 pixelFormat = ChoosePixelFormat(data->deviceContext, &desired);
+        Assert(pixelFormat, "ChoosePixelFormat failed to find a suitable pixel format.\n");
 
-        PIXELFORMATDESCRIPTOR suggested = {};
-        assert(DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggested), &suggested));
+        Assert(SetPixelFormat(data->deviceContext, pixelFormat, &desired), "Failed to set pixel format.\n");
 
-        assert(SetPixelFormat(deviceContext, pixelFormat, &suggested));
+        data->renderContext = wglCreateContext(data->deviceContext);
+        Assert(data->renderContext, "Failed to create render context.\n");
 
-        renderContext = wglCreateContext(deviceContext);
-        assert(renderContext);
-
-        wglMakeCurrent(deviceContext, renderContext);
+        wglMakeCurrent(data->deviceContext, data->renderContext);
 
         //--- START GET wglExtensions ---//
         wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
 
         if (wglGetExtensionsStringARB)
         {
-            const char * extensions = wglGetExtensionsStringARB(deviceContext);
+            const char * extensions = wglGetExtensionsStringARB(data->deviceContext);
 
             Bool32 HasWglARBCreateContext = String::Find(extensions, "WGL_ARB_create_context");
             Bool32 HasWglARBCreateContextProfile = String::Find(extensions, "WGL_ARB_create_context_profile");
@@ -74,87 +68,47 @@ namespace Platform
             if (HasWglARBCreateContext && HasWglARBCreateContextProfile)
             {
                 wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-
-                assert(wglCreateContextAttribsARB);
             }
         }
         else
         {
             wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-
-            assert(wglCreateContextAttribsARB);
         }
 
+        Assert(wglCreateContextAttribsARB, "wglCreateContextAttribsARB not found.\n");
 
-
-        DeleteContext();
+        DeleteContext(data);
         //--- END GET wglExtensions ---//
         //--- END TEMP RENDER CONTEXT ---//
 
         //--- START GET EXTENSION RENDER CONTEXT ---//
-        pixelFormat = ChoosePixelFormat(deviceContext, &desired);
+        pixelFormat = ChoosePixelFormat(data->deviceContext, &desired);
+        Assert(pixelFormat, "Failed to choose a pixel format.\n");
 
-        if (!pixelFormat)
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
-
-        suggested = {};
-
-        if (!DescribePixelFormat(deviceContext, pixelFormat, sizeof(suggested), &suggested))
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
-
-        if (!SetPixelFormat(deviceContext, pixelFormat, &suggested))
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
+        Assert(SetPixelFormat(data->deviceContext, pixelFormat, &desired), "Failed to set pixel format.\n");
 
         int attributes[] = {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-            WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+            WGL_CONTEXT_MAJOR_VERSION_ARB, major_version,
+            WGL_CONTEXT_MINOR_VERSION_ARB, minor_version,
             WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-            0
+            WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
+            NULL, NULL
         };
 
-        renderContext = wglCreateContextAttribsARB(deviceContext, 0, attributes);
+        data->renderContext = wglCreateContextAttribsARB(data->deviceContext, 0, attributes);
 
-        if (!renderContext)
-        {
-            // GLenum code = GL_NO_ERROR;
-            // code = glGetError();
+        Assert(data->renderContext, "wglCreateContextAttribsARB faile to create a render context.\n");
 
-            // if (code != GL_NO_ERROR)
-            // {
-            //     Debug::Print("OpenGL error: %d", code);
-            // }
-
-            Debug::Win32HandleError();
-
-            return false;
-        }
-
-        if (!wglMakeCurrent(deviceContext, renderContext))
-        {
-            Debug::Win32HandleError();
-
-            return false;
-        }
+        Assert(wglMakeCurrent(data->deviceContext, data->renderContext), "Failed to make the render context current.\n");
 
         wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
 
         if (wglGetExtensionsStringARB)
         {
-            const char * wglExtensions = wglGetExtensionsStringARB(deviceContext);
+            const char * wglExtensions = wglGetExtensionsStringARB(data->deviceContext);
 
-            Debug::Print((char *)wglExtensions);
+            // Debug::Print((char *)wglExtensions);
+            printf(wglExtensions);
         }
         else
         {
@@ -171,11 +125,11 @@ namespace Platform
     }
 
 
-    Bool32 SwapBuffers (void)
+    Bool32 SwapBuffers (PlatformData * data)
     {
-        assert(deviceContext)
+        Assert(data->deviceContext, "gPlatformData.deviceContext error.\n");
 
-        if (!::SwapBuffers(deviceContext))
+        if (!::SwapBuffers(data->deviceContext))
         {
             Debug::Win32HandleError();
 
@@ -186,9 +140,9 @@ namespace Platform
     }
 
 
-    Bool32 DeleteContext (void)
+    Bool32 DeleteContext (PlatformData * data)
     {
-        if (!renderContext)
+        if (!data->renderContext)
         {
             Debug::Print("Tried to delete a render context with no current context.");
 
@@ -196,9 +150,9 @@ namespace Platform
         }
 
         wglMakeCurrent(NULL, NULL);
-        wglDeleteContext(renderContext);
+        wglDeleteContext(data->renderContext);
 
-        renderContext = 0;
+        data->renderContext = NULL;
 
         return true;
     }
@@ -222,24 +176,15 @@ namespace Platform
             // Failed to load from the new context, try loading directly from the opengl32.dll.
             HMODULE dll = LoadLibrary("opengl32.dll");
 
-            if (dll == NULL)
-            {
-                Debug::Win32HandleError();
-
-                assert(false);
-            }
+            Assert(dll, "Failed to load opengl32.dll.\n");
 
             proc = (void *)GetProcAddress(dll, name);
 
-            if (proc == 0)
-            {
-                Debug::Win32HandleError();
-
-                assert(false);
-            }
+            Assert(proc, "Failed to load OpenGL procedure: %s.\n", name);
         }
 
         return proc;
     }
+}
 }
 }

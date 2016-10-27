@@ -33,7 +33,7 @@ namespace Graphics
     internal void LoadFunctions (void)
     {
         // Ask for OpenGL function addresses. This is platform dependant.
-        #define CAPSTAN_GL(type, name) name = (type)Platform::GetFunctionAddress(#name);
+        #define CAPSTAN_GL(type, name) name = (type)Platform::OpenGL::GetFunctionAddress(#name);
         #include "Capstan/Graphics/OpenGL/functions.def"
     }
 
@@ -78,7 +78,7 @@ namespace Graphics
 
     void OpenGL::StartUp (void)
     {
-        Platform::CreateContext();
+        Platform::OpenGL::CreateContext(&Capstan::gPlatformData, 3, 3);
         LoadFunctions();
         Setup();
 
@@ -145,17 +145,16 @@ namespace Graphics
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+        // TODO (Emil): This is not the place to load textures.
         ImageAsset image = gAssetManager.LoadTexture("images/heart.bmp");
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
         // glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-
         Vector3f cameraPosition = Vector3f(0.0f, 0.0f, 3.0f);
         Vector3f cameraTarget = Vector3f(0.0f, 0.0f, 0.0f);
         Vector3f cameraDirection = Normalize(cameraPosition - cameraTarget);
-
 
         view = Translate(Vector3f(0.0f, 0.0f, 0.0f));
         projection = Projection::Perspective(45.0f, 800.0f / 600.0f, 0.1f, 100.0f);
@@ -167,7 +166,7 @@ namespace Graphics
 
     void OpenGL::ShutDown (void)
     {
-        Platform::DeleteContext();
+        Platform::OpenGL::DeleteContext(&Capstan::gPlatformData);
 
         delete this->shader;
     }
@@ -198,7 +197,7 @@ namespace Graphics
 
         glBindVertexArray(0);
 
-        Platform::SwapBuffers();
+        Platform::OpenGL::SwapBuffers(&Capstan::gPlatformData);
     }
 }
 }
