@@ -3,6 +3,7 @@
 _cmake/
 build/
 venv/
+data/
 
 # Visual Studio Files
 *.obj
