@@ -10,7 +10,7 @@ namespace Capstan
     {
         this->blockSize = blockSize;
         this->memory = Memory::Allocate(size);
-        assert(this->memory);
+        Assert(this->memory, "Failed to allocate memory.\n");
         // NOTE (Emil): We allocate one bit per block in the allocator.
         this->occupied = Memory::Allocate((size / blockSize) / 8);
     }

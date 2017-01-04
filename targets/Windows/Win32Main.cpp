@@ -1,7 +1,7 @@
 #include <cstdio>
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <Wingdi.h>
+#include <Windows.h>
+#include <WinGDI.h>
 
 #include "Capstan/AssetManager.h"
 #include "Capstan/InputManager.h"
@@ -13,24 +13,29 @@
 #include "Capstan/Platform/Assert.h"
 #include "Capstan/Platform/Debug.h"
 #include "Capstan/Platform/FileSystem.h"
+#include "Capstan/Platform/Memory.h"
+#include "Capstan/Platform/Win32/PlatformData.h"
 
 #include "Capstan/Graphics/RenderManager.h"
 
-
 #define FRAME_RATE (60)
 #define FRAME_MS (FRAME_RATE / 1.0)
+
+
+using Win32Data = Capstan::Platform::PlatformData;
 
 
 Bool32 gRunning;
 
 namespace Capstan
 {
-    AssetManager            gAssetManager;
-    FileSystem              gFileSystem;
-    InputManager            gInputManager;
-    MemoryManager           gMemoryManager;
-    Graphics::RenderManager gRenderManager;
-    Timer                   gTimer;
+    AssetManager             gAssetManager;
+    FileSystem               gFileSystem;
+    InputManager             gInputManager;
+    MemoryManager            gMemoryManager;
+    Graphics::RenderManager  gRenderManager;
+    Timer                    gTimer;
+    Platform::PlatformData   gPlatformData;
 }
 
 
@@ -41,6 +46,7 @@ LRESULT CALLBACK Win32WindowProc(HWND windowHandle, UINT message, WPARAM wParam,
         case WM_DESTROY:
         case WM_QUIT:
         case WM_CLOSE: {
+            PostQuitMessage(0);
             gRunning = false;
         } break;
         default:
@@ -57,7 +63,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
 {
     WNDCLASSEX wnd = {};
     wnd.cbSize = sizeof(WNDCLASSEX);
-    wnd.style = CS_HREDRAW | CS_VREDRAW;
+    wnd.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wnd.lpfnWndProc = Win32WindowProc;
     wnd.hInstance = instance;
     wnd.hIcon = NULL;
@@ -65,17 +71,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     wnd.lpszClassName = "Engine Class Name";
     wnd.hIconSm = NULL;
 
-    if (!RegisterClassEx(&wnd))
-    {
-        Capstan::Debug::Print("Could not register Window Class.");
-
-        return 1;
-    }
+    Assert(RegisterClassEx(&wnd), "Could not register Window Class.\n");
 
     HWND windowHandle = CreateWindow(
         "Engine Class Name",
         "Engine Window Name",
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+        WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
         800,
@@ -85,18 +86,13 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
         0
     );
 
-    if (!windowHandle)
-    {
-        Capstan::Debug::Print("Could not create window.");
+    Assert(windowHandle, "Failed to create window.\n");
 
-        return 1;
-    }
+    // DWORD cpuInfoLength;
+    // SYSTEM_LOGICAL_PROCESSOR_INFORMATION cpuInfo;
+    // BOOL result = GetLogicalProcessorInformation(&cpuInfo, &cpuInfoLength);
 
-    DWORD cpuInfoLength;
-    SYSTEM_LOGICAL_PROCESSOR_INFORMATION cpuInfo;
-    BOOL result = GetLogicalProcessorInformation(&cpuInfo, &cpuInfoLength);
-
-    Capstan::Debug::Print("Cache Line Length: %d", cpuInfo.Cache.LineSize);
+    // Capstan::Debug::Print("Cache Line Length: %d", cpuInfo.Cache.LineSize);
 
 #ifdef CAPSTAN_CONSOLE
     BOOL console = AllocConsole();
@@ -112,10 +108,15 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR lpCmdLine, 
     }
 #endif
 
+    Capstan::gPlatformData.windowHandle = windowHandle;
+    Capstan::gPlatformData.deviceContext = GetDC(windowHandle);
+
     Capstan::gMemoryManager.StartUp(MB(400));
     Capstan::gFileSystem.StartUp();
     Capstan::gAssetManager.StartUp(MB(200));
     Capstan::gRenderManager.StartUp();
+
+    ShowWindow(windowHandle, nCmdShow);
 
     gRunning = true;
 

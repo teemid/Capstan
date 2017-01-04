@@ -18,5 +18,3 @@ MD _cmake
     POPD
 
     cmake --build _cmake --config Debug
-
-    cmake --build _cmake --target INSTALL

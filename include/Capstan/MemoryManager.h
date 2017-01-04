@@ -19,10 +19,10 @@ namespace Capstan
         MemoryManager ();
         ~MemoryManager ();
 
-        void StartUp (size_t reserveSize);
+        void StartUp (UInt64 reserveSize);
         void ShutDown (void);
 
-        void * Allocate (size_t size);
+        void * Allocate (UInt64 size);
         Bool32 Free (void * memory);
     private:
         void * top;

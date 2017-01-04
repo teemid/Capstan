@@ -6,4 +6,10 @@
 #define local_persist static
 #define internal static
 
+#define ILLEGAL_CASE(message, ...) \
+    default: \
+    { \
+        Assert(false, message, __VA_ARGS__); \
+    } break
+
 #endif

@@ -16,14 +16,11 @@ namespace Capstan
     MemoryManager::MemoryManager () { };
     MemoryManager::~MemoryManager () { };
 
-    void MemoryManager::StartUp (size_t reserveSize)
+    void MemoryManager::StartUp (UInt64 reserveSize)
     {
         start = Memory::Allocate(reserveSize);
 
-        if (!start)
-        {
-            Debug::Win32HandleError();
-        }
+        Assert(start, "Failed to allocate memory in MemoryManager.\n");
 
         current = start;
         top = start;
@@ -32,31 +29,21 @@ namespace Capstan
 
     void MemoryManager::ShutDown (void)
     {
+        Assert(start, "Trying to free nullptr in MemoryManager.\n");
+
         if (!Memory::Free(start))
         {
             Debug::Win32HandleError();
         }
     }
 
-    void * MemoryManager::Allocate (size_t size)
+    void * MemoryManager::Allocate (UInt64 size)
     {
-        // NOTE (Emil): More memory than we have.
-        if (size > (UInt64)((Byte *)this->end - (Byte *)this->start))
-        {
-            Debug::Print("Asked for more memory than the manager has.");
-            assert(0);
-
-            return nullptr;
-        }
+        // NOTE (Emil): More memory than we have
+        Assert(!(size > (Byte *)this->end - (Byte *)this->start), "Asked for more memory than the manager has.\n");
 
         // NOTE (Emil): Asked for more memory than is left.
-        if (size > (UInt64)((Byte *)this->end - (Byte *)this->top))
-        {
-            Debug::Print("Asked for more memory than the manager has.");
-            assert(0);
-
-            return nullptr;
-        }
+        Assert(!(size > (UInt64)((Byte *)this->end - (Byte *)this->top)), "Asked for more memory than the manager has available.\n");
 
         void * memory = this->current;
         this->current = this->top;

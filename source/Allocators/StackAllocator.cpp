@@ -23,12 +23,7 @@ namespace Capstan
     {
         size_t freeBytes = (Byte *)this->end - ((Byte *)this->start + this->marker);
 
-        if (freeBytes < size)
-        {
-            Debug::Print("StackAllocator out of memory");
-
-            assert(false);
-        }
+        Assert((freeBytes < size), "StackAllocator out of memory.\n");
 
         StackAllocation allocation;
         allocation.memory = this->start;
@@ -43,7 +38,7 @@ namespace Capstan
     {
         StackAllocation allocation = { };
 
-        assert((alignment & (alignment - 1)) == 0);
+        Assert((alignment & (alignment - 1)) == 0, "StackAllocator alignment error.\n");
 
         size_t expanded = size + alignment;
 
@@ -64,12 +59,7 @@ namespace Capstan
 
     void StackAllocator::Free (StackAllocation allocation)
     {
-        if (allocation.marker != this->marker)
-        {
-            Debug::Print("StackAllocator cannot free memory that is not on the top of the stack.");
-
-            assert(false);
-        }
+        Assert(allocation.marker != this->marker, "StackAllocator cannot free memory that is not on the top of the stack.\n");
 
         this->marker = (UInt32)((Byte *)allocation.memory - (Byte *)this->start);
     }

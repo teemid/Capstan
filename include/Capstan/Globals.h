@@ -11,12 +11,15 @@
 
 namespace Capstan
 {
+    namespace Platform { struct PlatformData; }
+
     extern AssetManager            gAssetManager;
     extern FileSystem              gFileSystem;
     extern InputManager            gInputManager;
     extern MemoryManager           gMemoryManager;
     extern Graphics::RenderManager gRenderManager;
     extern Timer                   gTimer;
+    extern Platform::PlatformData  gPlatformData;
 }
 
 

@@ -12,24 +12,24 @@ namespace Capstan
 {
 namespace Memory
 {
-    void * Allocate (size_t size)
+    void * Allocate (Size size)
     {
         if (size == 0)
         {
             return 0;
         }
 
-        return VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
+        return VirtualAlloc(0, (SIZE_T)size, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
     }
 
 
-    void * Reallocate (void * memory, size_t prevSize, size_t newSize)
+    void * Reallocate (void * memory, Size prevSize, Size newSize)
     {
-        void * newMemory = Allocate(newSize);
+        void * newMemory = Allocate((SIZE_T)newSize);
 
         if (newMemory)
         {
-            CopyMemory(newMemory, memory, prevSize);
+            CopyMemory(newMemory, memory, (SIZE_T)prevSize);
         }
 
         VirtualFree(memory, 0, MEM_RELEASE);
@@ -38,15 +38,15 @@ namespace Memory
     }
 
 
-    void Copy (void * source, void * destination, size_t size)
+    void Copy (void * source, void * destination, Size size)
     {
-        CopyMemory(destination, source, size);
+        CopyMemory(destination, source, (SIZE_T)size);
     }
 
 
-    void Zero (void * memory, size_t size)
+    void Zero (void * memory, Size size)
     {
-        ZeroMemory(memory, size);
+        ZeroMemory(memory, (SIZE_T)size);
     }
 
 
